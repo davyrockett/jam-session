@@ -152,17 +152,15 @@ function reviewScreen(song) {
     song.title = $('r-title').value.trim() || 'Our Song';
     song.by = $('r-by').value.trim() || 'Us';
     document.querySelectorAll('[data-p]').forEach((inp) => { song.pages[inp.dataset.p].lines[inp.dataset.l] = inp.value; });
-    const songs = store.get('songs', []);
-    if (isNew) { song.id = `my-${Date.now()}`; songs.push(song); }
-    else songs.splice(songs.findIndex((s) => s.id === song.id), 1, song);
-    store.set('songs', songs);
+    if (isNew) song.id = `my-${Date.now()}`;
+    saveMySong(song);
     draft = null;
     go(`#/song/${song.id}/0`);
   };
   if (isNew) $('r-again').onclick = () => { draft = null; go('#/builder', true); };
   else $('r-delete').onclick = () => {
     if (!confirm(`Delete "${song.title}"? This can't be undone.`)) return;
-    store.set('songs', store.get('songs', []).filter((s) => s.id !== song.id));
+    deleteMySong(song.id);
     go('#/songs');
   };
 }

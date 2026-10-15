@@ -50,8 +50,12 @@ with this section (copy it from any other app) plus an "## This app" section.
 Live: https://davyrockett.github.io/jam-session/ See README.md for features.
 
 - **Privacy:** one shared app, no client profiles. Songs use **first names only** (David's choice; the repo is
-  public). Hello/Goodbye ask for a name each time and never save it. Songs made in the Song Builder are
-  saved only on the device (localStorage `js.songs`).
+  public). Hello/Goodbye ask for a name each time and never save it.
+- **Song Builder songs sync** across devices (David asked for this): `sync.js` keeps them in the **private**
+  repo davyrockett/jam-session-data (`data.json`: `songs` + `deleted`), same scheme as Health Log
+  (newest edit wins, deletions remembered). Each device needs David's fine-grained access key pasted in
+  Settings (stored on the device only). Always save/delete through `saveMySong()` / `deleteMySong()`.
+  Local copy is localStorage `js.songs`; the app syncs on open and when it comes back to the front.
 - **Activities** (menu in `app.js` `ACTIVITIES`): Songbook (picture books, `songs.js`), Cause & Effect
   (`react.js`), Song Builder (`builder.js`), Hello / Goodbye (`ROUTINES` in `songs.js`, read with the
   same book reader), Choice Board (`choice.js`). Screens are chosen by the `#/…` address (`route()` in app.js).

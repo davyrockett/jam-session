@@ -210,5 +210,16 @@ app.addEventListener('click', (e) => {
 });
 
 Groove.bpm = store.get('bpm', 92);
+
+// Songs made on another device: fetch them when the app opens or comes back to the front,
+// and redraw lists that show them.
+window.addEventListener('DOMContentLoaded', () => {
+  sync.onUpdated = () => {
+    const where = location.hash.replace(/^#\/?/, '').split('/')[0];
+    if (['', 'songs', 'choice'].includes(where)) route();
+  };
+  sync.run();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sync.run(); });
+});
 // Wait until every activity's script has loaded.
 window.addEventListener('DOMContentLoaded', route);

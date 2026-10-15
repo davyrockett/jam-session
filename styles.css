@@ -210,3 +210,16 @@ dialog::backdrop { background: rgb(0 0 0 / .4); }
 .review-pages li { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
 .review-art { width: 160px; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; }
 .choose-bar { gap: 12px; }
+
+/* Sync settings */
+.sync-row > div:first-child { flex-basis: 100%; }
+.sync-status { margin: 8px 0; font-weight: 700; }
+.sync-status.bad { color: #C0392B; }
+.sync-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.key-field { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-weight: 700; color: var(--muted); }
+.key-field input { font: inherit; padding: 9px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+.sync-error { min-height: 1.4em; margin: 4px 0 8px; color: #C0392B; font-size: .9rem; }
+.how { margin-top: 12px; font-size: .9rem; color: var(--muted); }
+.how summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.how ol { padding-left: 1.2em; }
+dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }

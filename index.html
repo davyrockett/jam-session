@@ -45,6 +45,25 @@ applyTheme(savedTheme());
       <div class="seg" role="group" aria-label="Music speed">
         <button type="button" data-bpm="80">Slower</button><button type="button" data-bpm="92">Normal</button><button type="button" data-bpm="104">Faster</button>
       </div></div>
+    <div class="set-row sync-row"><div><b>Sync Song Builder songs</b>
+      <p class="cap">Keeps songs made in the Song Builder the same on every device, saved in your private GitHub project.</p>
+      <div id="sync-on" hidden>
+        <p class="sync-status" id="sync-status" aria-live="polite"></p>
+        <div class="sync-btns"><button type="button" class="btn primary" id="sync-now">Sync now</button><button type="button" class="btn" id="sync-off-btn">Turn off on this device</button></div>
+      </div>
+      <form id="sync-off" autocomplete="off" hidden>
+        <label class="key-field">Access key<input type="password" id="sync-key" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…"></label>
+        <p class="sync-error" id="sync-error" role="alert"></p>
+        <button type="submit" class="btn primary" id="sync-connect">Connect</button>
+        <details class="how"><summary>How to get an access key</summary>
+          <p><b>Easiest:</b> add this project to the key you already use for Health Log or Z4 Log, then paste that same key here.</p>
+          <ol><li>On github.com go to <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens</b>.</li>
+            <li>Open your existing sync key and tap <b>Edit</b>.</li>
+            <li>Under <b>Repository access</b>, add <b>jam-session-data</b>, then save.</li></ol>
+          <p><b>Or make a new key:</b> Generate new token, name it "Jam Session sync", choose <b>Only select repositories → jam-session-data</b>, and set <b>Repository permissions → Contents</b> to <b>Read and write</b>.</p>
+        </details>
+      </form>
+    </div></div>
     <div class="set-row"><div><b>App version</b><p class="cap" id="ver-line"></p></div><button type="button" class="btn" id="set-update">Check for updates</button></div>
   </div>
 </dialog>
@@ -59,6 +78,7 @@ applyTheme(savedTheme());
 <script src="react.js"></script>
 <script src="choice.js"></script>
 <script src="builder.js"></script>
+<script src="sync.js"></script>
 <script>
 // Settings: appearance, music speed and app updates (saved on this device).
 function markSettings() {
@@ -78,8 +98,43 @@ document.querySelectorAll('[data-bpm]').forEach(b => b.addEventListener('click',
   markSettings();
 }));
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme(savedTheme()));
+// Sync settings
+function markSync() {
+  const on = sync.isOn();
+  $('sync-on').hidden = !on;
+  $('sync-off').hidden = on;
+  if (!on) return;
+  const last = sync.lastSynced();
+  const when = last ? new Date(last).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '';
+  const n = store.get('songs', []).length;
+  $('sync-status').textContent = sync.status === 'syncing' ? 'Syncing…'
+    : sync.status === 'ok' || sync.status === 'off' ? `On. ${n} ${n === 1 ? 'song' : 'songs'}${when ? `, last synced ${when}` : ''}.`
+    : sync.message;
+  $('sync-status').classList.toggle('bad', !['ok', 'off', 'syncing'].includes(sync.status));
+}
+sync.onStatus = markSync;
+$('sync-now').addEventListener('click', () => sync.run());
+$('sync-off-btn').addEventListener('click', () => {
+  if (confirm('Turn off sync on this device? Songs already here stay, but new songs from other devices won\'t arrive until you connect again.')) sync.disconnect();
+});
+$('sync-off').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const key = $('sync-key').value.trim();
+  if (!key) { $('sync-error').textContent = 'Paste your access key first.'; return; }
+  $('sync-error').textContent = '';
+  $('sync-connect').disabled = true;
+  $('sync-connect').textContent = 'Checking…';
+  try { await sync.connect(DEFAULT_REPO, key); $('sync-key').value = ''; }
+  catch (err) { $('sync-error').textContent = err.message; }
+  $('sync-connect').disabled = false;
+  $('sync-connect').textContent = 'Connect';
+  markSync();
+});
+$('sync-key').addEventListener('input', () => { $('sync-error').textContent = ''; });
+
 function openSettings() {
   markSettings();
+  markSync();
   $('ver-line').textContent = `You're on ${window.APP_VERSION}.`;
   $('set-update').disabled = false;
   $('settings').showModal();
@@ -108,7 +163,7 @@ $('set-update').addEventListener('click', async () => {
 <script>
 // Offline support + updates. See sw.js.
 // The version shown in Settings. tools/bump.sh keeps this in step with VERSION in sw.js.
-window.APP_VERSION = 'v1';
+window.APP_VERSION = 'v2';
 (async () => {
   if (!('serviceWorker' in navigator)) return;
   // The test copy on the Mac (Start Jam Session.command) always loads fresh files.

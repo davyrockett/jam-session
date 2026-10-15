@@ -18,14 +18,18 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   what the iPad hears; the black line is how loud a hit needs to be.
 - **Song Builder** – the client picks pictures: what we saw, its colour, what it did, how it felt. The app
   writes a 4-page story song. Change any words, then **Save to Songbook**. Saved songs have an **Edit** button
-  (where you can also delete them). They're saved on this iPad only.
+  (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
 - **Hello / Goodbye** – the session songs as picture books. Type the client's first name on the first page and
   it appears in the words. Names are never saved.
 - **Choice Board** – pick 2 to 4 activities, tap **Show choices**, and the client picks what's next.
 
 ## Settings (gear)
 
-Light / Dark / Auto, music speed, and Check for updates.
+Light / Dark / Auto, music speed, sync, and Check for updates.
+
+**Sync Song Builder songs:** songs you build are saved in your private GitHub project
+`jam-session-data`, so every device shows the same songs. Set it up once on each device by pasting your
+access key in Settings (the steps are under "How to get an access key"). The app syncs whenever it opens.
 
 ## Adding a song you wrote together
 
