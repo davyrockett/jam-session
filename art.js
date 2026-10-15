@@ -190,6 +190,8 @@ function captain({ x, y, s = 1, skin = '#C68B5E', arm = 'wheel' } = {}) {
   const hand = (hx, hy) => `<circle cx="${hx}" cy="${hy}" r="4.5" fill="${skin}"/>`;
   const sleeve = (d) => `<path d="${d}" stroke="#ECF0F1" stroke-width="8" fill="none" stroke-linecap="round"/>`;
   return `<g transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-11" y="-52" width="9" height="48" rx="4" fill="#fff" stroke="${INK}" stroke-width="1.5"/><rect x="2" y="-52" width="9" height="48" rx="4" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
+    <rect x="-14" y="-7" width="13" height="7" rx="3" fill="#222"/><rect x="1" y="-7" width="13" height="7" rx="3" fill="#222"/>
     <rect x="-15" y="-96" width="30" height="50" rx="9" fill="#fff" stroke="${INK}" stroke-width="1.2"/>
     <path d="M-15 -78 h30" stroke="#F1C40F" stroke-width="2"/>
     <rect x="-4" y="-104" width="8" height="9" fill="${skin}"/>
@@ -197,7 +199,7 @@ function captain({ x, y, s = 1, skin = '#C68B5E', arm = 'wheel' } = {}) {
     <path d="M-10 -108 Q 0 -100 10 -108 Q 6 -102 0 -101 Q -6 -102 -10 -108 Z" fill="#7F8C8D"/>
     ${captainHat(0, -139)}
     ${face(0, -115, 'big', skin)}
-    ${sleeve('M12 -90 Q 24 -80 30 -78')}${hand(33, -77)}
+    ${sleeve('M12 -90 Q 30 -72 33 -46')}${hand(34, -42)}
   </g>`;
 }
 
@@ -328,8 +330,9 @@ function palmIsland(x, y) {
 function speedboatCrew({ walterMood = 'big', walterArm = 'wave' } = {}) {
   return `<circle cx="44" cy="218" r="13" fill="#fff"/><circle cx="26" cy="204" r="10" fill="#fff"/><circle cx="44" cy="196" r="7" fill="#fff"/><circle cx="16" cy="222" r="8" fill="#fff"/>
     ${hop(walter({ x: 150, y: 228, s: 0.95, mood: walterMood, arm: walterArm }))}
-    ${hop(`${captain({ x: 236, y: 226, s: 0.95 })}`)}${steeringWheel(270, 186, 11)}
-    ${speedboat(200, 248, 1.05)}`;
+    <rect x="263" y="190" width="16" height="24" rx="3" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
+    ${hop(captain({ x: 236, y: 226, s: 0.95 }))}${steeringWheel(270, 186, 11)}
+    ${speedboat(200, 248, 1.05, { windshield: false })}`;
 }
 
 function chorusScene(sunset) {
@@ -420,7 +423,7 @@ const SCENES = {
         reveal('me', `<g transform="translate(220 236) scale(1.05)">${captainHat(-7, -126)}</g>`))}
       <rect x="244" y="178" width="30" height="58" rx="4" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
       ${steeringWheel(252, 160, 14)}
-      ${speedboat(200, 262, 1.15)}
+      ${speedboat(200, 262, 1.15, { windshield: false })}
     </g>${sea(254)}
     ${reveal('tish', shout(66, 84, 'TISH!', 28))}${reveal('mariana', shout(158, 40, 'MARIANA!', 26))}${reveal('me', shout(296, 62, 'WALTER!', 34))}`,
 
