@@ -70,7 +70,10 @@ applyTheme(savedTheme());
 
 <div class="update" id="update-banner" role="status" hidden><span>A new version is ready.</span><button type="button" class="btn primary" id="update-btn">Update</button></div>
 
+<script src="vendor/rough.js"></script>
+<script src="sketch.js"></script>
 <script src="art.js"></script>
+<script src="characters.js"></script>
 <script src="objects.js"></script>
 <script src="songs.js"></script>
 <script src="music.js"></script>
@@ -163,7 +166,7 @@ $('set-update').addEventListener('click', async () => {
 <script>
 // Offline support + updates. See sw.js.
 // The version shown in Settings. tools/bump.sh keeps this in step with VERSION in sw.js.
-window.APP_VERSION = 'v4';
+window.APP_VERSION = 'v5';
 (async () => {
   if (!('serviceWorker' in navigator)) return;
   // The test copy on the Mac (Start Jam Session.command) always loads fresh files.

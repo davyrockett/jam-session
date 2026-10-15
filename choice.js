@@ -5,7 +5,7 @@ function choiceCards() {
   const cards = allSongs().map((s) => ({ id: `song:${s.id}`, label: s.title, art: () => scene(s.cover), go: `#/song/${s.id}/0` }));
   Object.entries(WORLDS).forEach(([id, w]) => cards.push({
     id: `react:${id}`, label: w.name, go: `#/react/${id}`,
-    art: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${w.back(0)}<g transform="translate(140 ${w.ground - 150}) scale(1.2)">${
+    art: () => `<svg data-sketch viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${w.back(0)}<g transform="translate(140 ${w.ground - 150}) scale(1.2)">${
       w.things[0] === 'fireworks' ? OBJECTS.cake.draw() : OBJECTS[w.things[0]].draw()}</g>${w.front()}</svg>`,
   }));
   cards.push({ id: 'builder', label: 'Song Builder', art: () => THUMBS.builder(), go: '#/builder' });

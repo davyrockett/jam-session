@@ -126,8 +126,8 @@ function reactScreen(worldId) {
   const drawWorld = () => {
     // On a wide screen the top of the sky is cut off, so the sun and clouds move down to stay in view.
     const top = Math.max(0, 300 - (400 * stage.clientHeight) / stage.clientWidth);
-    $('back').innerHTML = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${world.back(top)}</svg>`;
-    $('front').innerHTML = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${world.front()}</svg>`;
+    $('back').innerHTML = `<svg data-sketch viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${world.back(top)}</svg>`;
+    $('front').innerHTML = `<svg data-sketch viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${world.front()}</svg>`;
     fx.innerHTML = '';
   };
   drawWorld();
@@ -226,7 +226,7 @@ function reactScreen(worldId) {
     const el = document.createElement('div');
     el.className = 'thing';
     el.style.width = el.style.height = `${size}px`;
-    el.innerHTML = `<svg viewBox="0 0 100 100">${rays}<circle cx="50" cy="50" r="6" fill="#fff"/></svg>`;
+    el.innerHTML = `<svg data-sketch viewBox="0 0 100 100">${rays}<circle cx="50" cy="50" r="6" fill="#fff"/></svg>`;
     const x = W * (0.1 + Math.random() * 0.8) - size / 2, y = H * (0.05 + Math.random() * 0.35);
     fx.appendChild(el);
     el.animate([{ transform: `translate(${x}px, ${y}px) scale(.1)`, opacity: 1 }, { transform: `translate(${x}px, ${y}px) scale(1)`, opacity: 1, offset: 0.35 },

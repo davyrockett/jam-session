@@ -42,7 +42,7 @@ const FEELINGS = {
   sleepy: `<path d="M28 42 Q 36 48 44 42 M56 42 Q 64 48 72 42" stroke="#2C3E50" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="66" rx="7" ry="5" fill="#2C3E50"/>`,
   surprised: `<circle cx="36" cy="38" r="7" fill="#fff" stroke="#2C3E50" stroke-width="3.5"/><circle cx="64" cy="38" r="7" fill="#fff" stroke="#2C3E50" stroke-width="3.5"/><circle cx="36" cy="38" r="3" fill="#2C3E50"/><circle cx="64" cy="38" r="3" fill="#2C3E50"/><ellipse cx="50" cy="66" rx="9" ry="12" fill="#2C3E50"/>`,
 };
-const faceSvg = (f) => `<svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="#FFD34D" stroke="#2C3E50" stroke-width="4"/>${FEELINGS[f]}</svg>`;
+const faceSvg = (f) => `<svg data-sketch viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="#FFD34D" stroke="#2C3E50" stroke-width="4"/>${FEELINGS[f]}</svg>`;
 
 // A built song's picture: the topic's background with the chosen thing in it.
 function builtScene(spec) {
@@ -87,13 +87,13 @@ function builderScreen(mode, editId) {
   const steps = [
     { key: 'topic', ask: 'What should our song be about?',
       options: () => Object.entries(TOPICS).map(([id, t]) => ({ value: id, label: t.name,
-        art: `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${builtScene({ world: PLACES[id].world, thing: objectsIn(id)[0] })}</svg>` })) },
+        art: `<svg data-sketch viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${builtScene({ world: PLACES[id].world, thing: objectsIn(id)[0] })}</svg>` })) },
     { key: 'thing', ask: 'What did we see?',
       options: () => objectsIn(draft.topic).slice(0, 6).map((k) => ({ value: k, label: OBJECTS[k].word, art: objSvg(k) })) },
     { key: 'colour', ask: 'What colour was it?',
       options: () => COLOURS.map((c) => ({ value: c, label: c[0], art: objSvg(draft.thing, '', c[1]) })) },
     { key: 'action', ask: 'What did it do?',
-      options: () => ACTIONS_FOR[draft.topic].map((k) => ({ value: k, label: k, art: `<svg viewBox="-4 -4 108 108">${ACTIONS[k].icon}</svg>` })) },
+      options: () => ACTIONS_FOR[draft.topic].map((k) => ({ value: k, label: k, art: `<svg data-sketch viewBox="-4 -4 108 108">${ACTIONS[k].icon}</svg>` })) },
     { key: 'feeling', ask: 'How did it make you feel?',
       options: () => Object.keys(FEELINGS).map((k) => ({ value: k, label: k, art: faceSvg(k) })) },
   ];

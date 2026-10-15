@@ -176,6 +176,6 @@ function objDraw(name, tint) {
   return tint ? svg.split(ob.main).join(tint) : svg;
 }
 function objSvg(name, attrs = '', tint) {
-  return `<svg viewBox="-4 -4 108 108" ${attrs}>${objDraw(name, tint)}</svg>`;
+  return `<svg data-sketch viewBox="-4 -4 108 108" ${attrs}>${objDraw(name, tint)}</svg>`;
 }
 function objectsIn(topic) { return Object.keys(OBJECTS).filter((k) => OBJECTS[k].topic === topic); }

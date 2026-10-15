@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jam Session – art check</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Every picture large, so mistakes (missing legs, overlaps) are easy to spot.
+     Open: http://localhost:8773/artcheck.html  (add ?plain to see it without the sketch style) */
+  body { padding: 20px; }
+  .bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--w, 900px)), 1fr)); gap: 22px; }
+  figure { margin: 0; }
+  figure .art { width: 100%; }
+  figcaption { font-weight: 700; margin: 6px 2px 0; color: var(--muted); }
+  .objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .objs div { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 8px; position: relative; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>Art check</h1>
+  <button class="btn" id="surprises">Surprises: on</button>
+  <button class="btn" id="size">Size: large</button>
+  <a class="btn" id="mode" href="?plain">Show plain (no sketch)</a>
+</div>
+<div class="grid" id="grid"></div>
+<h2 style="margin:28px 0 12px">Picture library</h2>
+<div class="objs" id="objs"></div>
+
+<script src="vendor/rough.js"></script>
+<script src="sketch.js"></script>
+<script src="art.js"></script>
+<script src="characters.js"></script>
+<script src="objects.js"></script>
+<script src="songs.js"></script>
+<script>
+  const plain = location.search.includes('plain');
+  if (plain) { Sketch.on = false; document.getElementById('mode').textContent = 'Show sketch'; document.getElementById('mode').href = '?'; }
+  const scenes = Object.keys(SCENES);
+  const grid = document.getElementById('grid');
+  grid.innerHTML = scenes.map((name) => `<figure><div class="art">${scene(name)}</div><figcaption>${name}</figcaption></figure>`).join('');
+  document.getElementById('objs').innerHTML = Object.keys(OBJECTS).map((k) => `<div>${objSvg(k)}<figcaption>${k}</figcaption></div>`).join('');
+  if (!plain) Sketch.start();
+
+  // Show every hidden surprise and every finished move.
+  let on = true;
+  const surprises = () => {
+    document.querySelectorAll('.reveal').forEach((el) => el.classList.toggle('shown', on));
+    document.querySelectorAll('[data-anim="board"], [data-anim="stepaside"]').forEach((el) => el.classList.toggle('go', on));
+  };
+  surprises();
+  document.getElementById('surprises').onclick = (e) => { on = !on; surprises(); e.target.textContent = `Surprises: ${on ? 'on' : 'off'}`; };
+  let large = true;
+  document.getElementById('size').onclick = (e) => { large = !large; grid.style.setProperty('--w', large ? '900px' : '420px'); e.target.textContent = `Size: ${large ? 'large' : 'small'}`; };
+</script>
+</body>
+</html>

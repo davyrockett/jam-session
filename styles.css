@@ -262,3 +262,13 @@ dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
   [data-anim="board"].go { transform: translate(92px, 5px); }
   [data-anim="stepaside"].go { transform: translate(52px, 2px); }
 }
+
+/* Sketch style (sketch.js): measure drawings without their animations moving them */
+.sk-measure g[class], .sk-measure g[data-anim] { transform: none !important; animation: none !important; transition: none !important; }
+/* Paper grain over every picture */
+.art, .thumb, .pick-art, .review-cover, .review-art { position: relative; }
+.art::after, .thumb::after, .pick-art::after, .stage::after, .review-cover::after, .review-art::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; opacity: .55; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .48 0 0 0 0 .38 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.stage::after { z-index: 3; }

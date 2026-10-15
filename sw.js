@@ -2,7 +2,7 @@
 //
 // IMPORTANT: whenever any file below changes, bump VERSION.
 // That is how phones and iPads learn there's an update to download.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const CACHE = `jamsession-${VERSION}`;
 const FONTS = 'jamsession-fonts';
 
@@ -10,7 +10,10 @@ const ASSETS = [
   './',
   './index.html',
   './styles.css',
+  './vendor/rough.js',
+  './sketch.js',
   './art.js',
+  './characters.js',
   './objects.js',
   './songs.js',
   './music.js',

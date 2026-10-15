@@ -75,7 +75,8 @@ function face(cx, cy, mood = 'smile', skin) {
       <circle cx="${cx - 5.5}" cy="${eyeY - 1}" r="1.8" fill="${INK}"/><circle cx="${cx + 5.5}" cy="${eyeY - 1}" r="1.8" fill="${INK}"/>
       <ellipse cx="${cx}" cy="${cy + 8}" rx="3.6" ry="4.6" fill="${INK}"/>`;
   }
-  const eyes = `<circle cx="${cx - 5}" cy="${eyeY}" r="2" fill="${INK}"/><circle cx="${cx + 5}" cy="${eyeY}" r="2" fill="${INK}"/>
+  const eyes = `<circle cx="${cx - 5}" cy="${eyeY}" r="3.3" fill="#fff"/><circle cx="${cx + 5}" cy="${eyeY}" r="3.3" fill="#fff"/>
+    <circle cx="${cx - 4.6}" cy="${eyeY + 0.3}" r="2" fill="${INK}"/><circle cx="${cx + 5.4}" cy="${eyeY + 0.3}" r="2" fill="${INK}"/>
     <circle cx="${cx - 9}" cy="${cy + 4}" r="2.4" fill="#E8735A" opacity=".35"/><circle cx="${cx + 9}" cy="${cy + 4}" r="2.4" fill="#E8735A" opacity=".35"/>`;
   if (mood === 'big') return eyes + `<path d="M${cx - 6} ${cy + 5} Q ${cx} ${cy + 14} ${cx + 6} ${cy + 5} Z" fill="#7A1F1F" stroke="${INK}" stroke-width="1.2" stroke-linejoin="round"/>`;
   if (mood === 'sing') return eyes + `<ellipse cx="${cx}" cy="${cy + 8}" rx="3.2" ry="4" fill="#7A1F1F" stroke="${INK}" stroke-width="1.2"/>`;
@@ -93,115 +94,7 @@ function captainHat(cx, top) {
 
 // ---------- People ----------
 
-// Walter in his wheelchair, facing right. (x, y) = the ground under the big wheel.
-// arm: lap, wave, up, reach, mic, card
-function walter({ x, y, s = 1, mood = 'smile', arm = 'lap', hat = false, shirt = PEOPLE.walter.shirt } = {}) {
-  const { skin, hair } = PEOPLE.walter;
-  const hand = (hx, hy) => `<circle cx="${hx}" cy="${hy}" r="4.8" fill="${skin}"/>`;
-  const sleeve = (d) => `<path d="${d}" stroke="${shirt}" stroke-width="8.5" fill="none" stroke-linecap="round"/>`;
-  let armSvg = '';
-  if (arm === 'lap') armSvg = sleeve('M-6 -80 Q 2 -62 13 -55') + hand(15, -54);
-  if (arm === 'wave') armSvg = sleeve('M-4 -80 L 14 -106') + hand(16, -110);
-  if (arm === 'up') armSvg = sleeve('M-4 -80 L 4 -120') + `<circle cx="5" cy="-125" r="5.5" fill="${skin}"/>`;
-  if (arm === 'reach') armSvg = sleeve('M-6 -80 Q 8 -76 22 -82') + hand(25, -83);
-  if (arm === 'mic') armSvg = sleeve('M-6 -80 Q 6 -72 10 -92') + mic(12, -104) + hand(12, -92);
-  if (arm === 'card') armSvg = sleeve('M-6 -80 Q 8 -76 22 -82') +
-    `<g transform="rotate(-8 34 -88)"><rect x="22" y="-102" width="26" height="20" rx="2" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
-      <path d="M26 -96 h18 M26 -91 h14 M26 -86 h16" stroke="#7F8C8D" stroke-width="1.5"/><circle cx="43" cy="-97" r="2.5" fill="#27AE60"/></g>` + hand(25, -83);
-  let spokes = '';
-  for (let a = 0; a < 180; a += 30) {
-    const r = (a * Math.PI) / 180, dx = 19 * Math.cos(r), dy = 19 * Math.sin(r);
-    spokes += `<path d="M${-dx} ${-26 - dy} L${dx} ${-26 + dy}" stroke="#95A5A6" stroke-width="1.4"/>`;
-  }
-  return `<g transform="translate(${x} ${y}) scale(${s})">
-    <path d="M-31 -98 L-23 -98 L-19 -40" stroke="#555" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <rect x="-21" y="-87" width="25" height="48" rx="9" fill="${shirt}"/>
-    <rect x="-19" y="-51" width="46" height="14" rx="7" fill="#34495E"/>
-    <rect x="17" y="-47" width="12" height="35" rx="6" fill="#34495E"/>
-    <rect x="16" y="-17" width="21" height="9" rx="4.5" fill="#222"/>
-    <path d="M-22 -38 L26 -38 L36 -12 M13 -7 L41 -7" stroke="#555" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="36" cy="-6" r="6" fill="#333"/><circle cx="36" cy="-6" r="2" fill="#999"/>
-    <circle cx="0" cy="-26" r="25" fill="none" stroke="#333" stroke-width="5"/>
-    <circle cx="0" cy="-26" r="19.5" fill="none" stroke="#BDC3C7" stroke-width="2"/>${spokes}
-    <circle cx="0" cy="-26" r="3.5" fill="#555"/>
-    <rect x="-12" y="-94" width="9" height="9" fill="${skin}"/>
-    <circle cx="-22" cy="-104" r="3.5" fill="${skin}"/><circle cx="8" cy="-104" r="3.5" fill="${skin}"/>
-    <circle cx="-7" cy="-104" r="15" fill="${skin}"/>
-    <path d="M-22 -104 C -23 -124, 9 -124, 8 -104 C 5 -113, -19 -113, -22 -104 Z" fill="${hair}"/>
-    ${hat ? captainHat(-7, -126) : ''}
-    ${face(-7, -103, mood, skin)}
-    ${armSvg}
-  </g>`;
-}
-
-// A sister, standing. style: pony or long. arm: down, up, bowl, wave, mic
-function sister({ x, y, s = 1, who = 'tish', mood = 'smile', arm = 'down' } = {}) {
-  const { skin, hair, shirt, style } = PEOPLE[who];
-  const hand = (hx, hy) => `<circle cx="${hx}" cy="${hy}" r="4.5" fill="${skin}"/>`;
-  const sleeve = (d) => `<path d="${d}" stroke="${shirt}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
-  let arms = '';
-  if (arm === 'down') arms = sleeve('M-13 -90 L -19 -60') + sleeve('M13 -90 L 19 -60') + hand(-20, -56) + hand(20, -56);
-  if (arm === 'up') arms = sleeve('M-13 -90 L -25 -122') + sleeve('M13 -90 L 25 -122') + hand(-27, -127) + hand(27, -127);
-  if (arm === 'wave') arms = sleeve('M-13 -90 L -19 -60') + sleeve('M13 -90 L 27 -116') + hand(-20, -56) + hand(29, -120);
-  if (arm === 'bowl') arms = sleeve('M-13 -90 Q -18 -70 -6 -68') + sleeve('M13 -90 Q 18 -70 6 -68') +
-    `<path d="M-24 -74 L24 -74 Q 22 -54 0 -52 Q -22 -54 -24 -74 Z" fill="#16A085" stroke="${INK}" stroke-width="1.5"/>
-     <circle cx="-14" cy="-78" r="6" fill="#6BCB77"/><circle cx="-3" cy="-81" r="7" fill="#4CAF50"/><circle cx="10" cy="-79" r="6.5" fill="#6BCB77"/>
-     <circle cx="3" cy="-77" r="3.5" fill="#E74C3C"/><circle cx="-9" cy="-76" r="3" fill="#E74C3C"/><circle cx="16" cy="-76" r="3" fill="#F39C12"/>`;
-  if (arm === 'mic') arms = sleeve('M-13 -90 L -19 -60') + hand(-20, -56) + sleeve('M13 -90 Q 16 -76 8 -100') + mic(8, -112) + hand(8, -100);
-  const back = style === 'long'
-    ? `<path d="M-17 -118 Q -20 -84 -12 -82 L 12 -82 Q 20 -84 17 -118 Z" fill="${hair}"/>`
-    : `<ellipse cx="18" cy="-114" rx="6" ry="12" fill="${hair}" transform="rotate(-20 18 -114)"/><rect x="11" y="-124" width="5" height="7" rx="2" fill="#F1C40F"/>`;
-  return `<g transform="translate(${x} ${y}) scale(${s})">
-    ${back}
-    <rect x="-10" y="-50" width="8" height="46" rx="4" fill="#2C3E50"/><rect x="2" y="-50" width="8" height="46" rx="4" fill="#2C3E50"/>
-    <rect x="-13" y="-6" width="12" height="6" rx="3" fill="#222"/><rect x="1" y="-6" width="12" height="6" rx="3" fill="#222"/>
-    <rect x="-15" y="-96" width="30" height="50" rx="10" fill="${shirt}"/>
-    <rect x="-4" y="-104" width="8" height="9" fill="${skin}"/>
-    <circle cx="0" cy="-116" r="15" fill="${skin}"/>
-    <path d="M-16 -113 C -17 -136, 17 -136, 16 -113 C 10 -124, -10 -124, -16 -113 Z" fill="${hair}"/>
-    ${face(0, -115, mood, skin)}
-    ${arms}
-  </g>`;
-}
-
-// A Marine in camouflage-green uniform and cover (cap). arm: down, push (behind the chair), guide (in front)
-function marine({ x, y, s = 1, skin = '#8D5524', arm = 'down', flip = false } = {}) {
-  const green = '#5B6B3A', dark = '#45522B';
-  const hand = (hx, hy) => `<circle cx="${hx}" cy="${hy}" r="4.5" fill="${skin}"/>`;
-  const sleeve = (d) => `<path d="${d}" stroke="${green}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
-  let arms = sleeve('M-13 -90 L -18 -60') + hand(-19, -56);
-  if (arm === 'down') arms += sleeve('M13 -90 L 18 -60') + hand(19, -56);
-  if (arm === 'help') arms += sleeve('M13 -90 Q 26 -78 34 -74') + hand(37, -73);
-  return `<g transform="translate(${x} ${y}) scale(${flip ? -s : s} ${s})">
-    <rect x="-10" y="-50" width="8" height="46" rx="4" fill="${dark}"/><rect x="2" y="-50" width="8" height="46" rx="4" fill="${dark}"/>
-    <rect x="-13" y="-7" width="12" height="7" rx="3" fill="#3B2F1E"/><rect x="1" y="-7" width="12" height="7" rx="3" fill="#3B2F1E"/>
-    <rect x="-15" y="-96" width="30" height="50" rx="9" fill="${green}"/>
-    <circle cx="-7" cy="-80" r="4" fill="${dark}"/><circle cx="6" cy="-66" r="5" fill="${dark}"/><circle cx="-4" cy="-58" r="3.5" fill="${dark}"/>
-    <rect x="-15" y="-52" width="30" height="5" fill="#3B2F1E"/>
-    <rect x="-4" y="-104" width="8" height="9" fill="${skin}"/>
-    <circle cx="0" cy="-116" r="15" fill="${skin}"/>
-    <rect x="-15" y="-136" width="30" height="13" rx="2" fill="${green}"/><rect x="-6" y="-127" width="27" height="5" rx="2.5" fill="${dark}"/>
-    ${face(1, -113, 'smile', skin)}
-    ${arms}
-  </g>`;
-}
-
-function captain({ x, y, s = 1, skin = '#C68B5E', arm = 'wheel' } = {}) {
-  const hand = (hx, hy) => `<circle cx="${hx}" cy="${hy}" r="4.5" fill="${skin}"/>`;
-  const sleeve = (d) => `<path d="${d}" stroke="#ECF0F1" stroke-width="8" fill="none" stroke-linecap="round"/>`;
-  return `<g transform="translate(${x} ${y}) scale(${s})">
-    <rect x="-11" y="-52" width="9" height="48" rx="4" fill="#fff" stroke="${INK}" stroke-width="1.5"/><rect x="2" y="-52" width="9" height="48" rx="4" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
-    <rect x="-14" y="-7" width="13" height="7" rx="3" fill="#222"/><rect x="1" y="-7" width="13" height="7" rx="3" fill="#222"/>
-    <rect x="-15" y="-96" width="30" height="50" rx="9" fill="#fff" stroke="${INK}" stroke-width="1.2"/>
-    <path d="M-15 -78 h30" stroke="#F1C40F" stroke-width="2"/>
-    <rect x="-4" y="-104" width="8" height="9" fill="${skin}"/>
-    <circle cx="0" cy="-116" r="15" fill="${skin}"/>
-    <path d="M-10 -108 Q 0 -100 10 -108 Q 6 -102 0 -101 Q -6 -102 -10 -108 Z" fill="#7F8C8D"/>
-    ${captainHat(0, -139)}
-    ${face(0, -115, 'big', skin)}
-    ${sleeve('M12 -90 Q 30 -72 33 -46')}${hand(34, -42)}
-  </g>`;
-}
+// The people (walter, sister, marine, captain) are in characters.js.
 
 // ---------- Things ----------
 
@@ -273,12 +166,14 @@ function ship(x, y, s = 1) {
   </g>`;
 }
 
-function speedboat(x, y, s = 1, { motor = true, windshield = true } = {}) {
+function speedboat(x, y, s = 1, { motor = true, windshield = false } = {}) {
   return `<g transform="translate(${x} ${y}) scale(${s})">
-    ${motor ? `<rect x="-132" y="-48" width="20" height="44" rx="4" fill="#555" stroke="${INK}" stroke-width="2"/><rect x="-136" y="-54" width="28" height="12" rx="4" fill="#333"/>` : ''}
-    ${windshield ? `<path d="M30 -36 L46 -64 L58 -64 L54 -36 Z" fill="#D6EEFF" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>` : ''}
-    <path d="M-116 -36 L132 -36 L104 4 L-96 4 Z" style="fill:${BOAT}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M-112 -24 L122 -24 L117 -17 L-107 -17 Z" fill="#fff"/>
+    ${motor ? `<path d="M-136 -52 h24 v16 h-7 v28 h-10 v-28 h-7 Z" fill="#555" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>` : ''}
+    ${windshield ? `<path d="M44 -40 L58 -62 L76 -62 L80 -40 Z" fill="#D6EEFF" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>` : ''}
+    <path d="M-104 -46 H86" stroke="${INK}" stroke-width="2"/>
+    ${[-96, -60, -24, 12, 48, 82].map((px) => `<path d="M${px} -46 V-40" stroke="${INK}" stroke-width="2"/>`).join('')}
+    <path d="M-120 -40 L92 -40 Q 126 -40 152 -54 Q 140 -22 104 3 L-98 3 Q -114 -14 -120 -40 Z" style="fill:${BOAT}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-117 -29 L124 -29 Q 136 -32 143 -38 Q 138 -28 128 -21 L-112 -21 Z" fill="#fff"/>
   </g>`;
 }
 
@@ -329,9 +224,10 @@ function palmIsland(x, y) {
 // The captain's speedboat with Walter and the captain aboard (cover and the "motor" page).
 function speedboatCrew({ walterMood = 'big', walterArm = 'wave' } = {}) {
   return `<circle cx="44" cy="218" r="13" fill="#fff"/><circle cx="26" cy="204" r="10" fill="#fff"/><circle cx="44" cy="196" r="7" fill="#fff"/><circle cx="16" cy="222" r="8" fill="#fff"/>
-    ${hop(walter({ x: 150, y: 228, s: 0.95, mood: walterMood, arm: walterArm }))}
-    <rect x="263" y="190" width="16" height="24" rx="3" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
-    ${hop(captain({ x: 236, y: 226, s: 0.95 }))}${steeringWheel(270, 186, 11)}
+    ${hop(walter({ x: 140, y: 228, s: 0.95, mood: walterMood, arm: walterArm }))}
+    <rect x="263" y="174" width="16" height="40" rx="3" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
+    ${steeringWheel(271, 170, 11)}
+    ${hop(captain({ x: 246, y: 226, s: 0.95, wheel: [268, 170] }))}
     ${speedboat(200, 248, 1.05, { windshield: false })}`;
 }
 
@@ -379,13 +275,13 @@ const SCENES = {
 
   // "…he saw the water / The captain revved the motor and he was like WHAT!?"
   motor: () => `${sky()}${cloud(330, 56)}
-    ${reveal('zoom', `<path d="M300 112 h50 M286 128 h60 M306 144 h40" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`)}
+    ${reveal('zoom', `<path d="M14 140 h46 M4 156 h52 M18 172 h34" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`)}
     ${reveal('bubble', bubble(30, 48, 130, 64, 'WHAT!?', 108, 112))}
     ${play('zoom', 'shake', `<g class="zoom">${speedboatCrew({ walterMood: 'wow', walterArm: 'lap' })}</g>`)}
     ${sea(240)}
     ${reveal('zoom', `<path d="M62 256 Q 34 264 6 256 M70 270 Q 42 278 14 272" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>`)}
-    ${reveal('splash', [[300, 230, 9], [318, 214, 7], [338, 226, 8], [356, 210, 6], [96, 232, 7], [76, 218, 6]].map(([x, y, r]) =>
-      `<path d="M${x} ${y - r * 1.8} Q ${x + r} ${y} ${x} ${y + r} Q ${x - r} ${y} ${x} ${y - r * 1.8} Z" fill="#BFE6FF" stroke="#1B6CB8" stroke-width="2"/>`).join('') + shout(330, 186, 'SPLASH!', 30))}`,
+    ${reveal('splash', [[352, 214, 9], [370, 196, 7], [386, 214, 8], [336, 196, 6], [96, 232, 7], [76, 218, 6]].map(([x, y, r]) =>
+      `<path d="M${x} ${y - r * 1.8} Q ${x + r} ${y} ${x} ${y + r} Q ${x - r} ${y} ${x} ${y - r * 1.8} Z" fill="#BFE6FF" stroke="#1B6CB8" stroke-width="2"/>`).join('') + shout(342, 136, 'SPLASH!', 32))}`,
 
   // "…a little bit scary … The Marines helped me onto the boat, I said 1, 2, 3"
   marines: () => `${sky()}${sun(360, 40, 20)}
@@ -419,10 +315,10 @@ const SCENES = {
     <g class="bob">
       ${play('tish', 'hop', sister({ x: 92, y: 232, s: 0.95, who: 'tish', mood: 'big', arm: 'up' }))}
       ${play('mariana', 'hop', sister({ x: 140, y: 232, s: 0.95, who: 'mariana', mood: 'big', arm: 'wave' }))}
-      ${play('me', 'hop', walter({ x: 220, y: 236, s: 1.05, mood: 'big', arm: 'reach' }) +
-        reveal('me', `<g transform="translate(220 236) scale(1.05)">${captainHat(-7, -126)}</g>`))}
-      <rect x="244" y="178" width="30" height="58" rx="4" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
-      ${steeringWheel(252, 160, 14)}
+      <rect x="244" y="148" width="12" height="88" rx="3" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
+      ${steeringWheel(250, 142, 14)}
+      ${play('me', 'hop', walter({ x: 214, y: 236, s: 1.05, mood: 'big', arm: [250, 142] }) +
+        reveal('me', `<g transform="translate(214 236) scale(1.05)">${captainHat(-6, -144)}</g>`))}
       ${speedboat(200, 262, 1.15, { windshield: false })}
     </g>${sea(254)}
     ${reveal('tish', shout(66, 84, 'TISH!', 28))}${reveal('mariana', shout(158, 40, 'MARIANA!', 26))}${reveal('me', shout(296, 62, 'WALTER!', 34))}`,
@@ -486,28 +382,28 @@ Object.assign(SCENES, {
 // of the background and thing to show — see builtScene() in builder.js.
 function scene(name) {
   const inner = typeof name === 'object' ? builtScene(name) : SCENES[name]();
-  return `<svg viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice">${inner}</svg>`;
+  return `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice">${inner}</svg>`;
 }
 
 // ---------- Menu pictures for the other activities ----------
 
 const THUMBS = {
   // A hand drum with a burst of stars.
-  react: () => `<svg viewBox="0 0 400 300" role="img">${rays(200, 170, '#FFE08A', '#FFD34D')}
+  react: () => `<svg data-sketch viewBox="0 0 400 300" role="img">${rays(200, 170, '#FFE08A', '#FFD34D')}
     ${star(90, 70, 18, '#E74C3C')}${star(310, 64, 22, '#2563EB')}${star(330, 170, 14, '#27AE60')}${star(70, 180, 14, '#E84393')}
     <path d="M140 150 L260 150 L240 262 L160 262 Z" fill="#C0392B" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
     <path d="M150 190 L250 190 M156 226 L244 226" stroke="#F1C40F" stroke-width="6"/>
     <ellipse cx="200" cy="150" rx="62" ry="18" fill="#F5E6C8" stroke="${INK}" stroke-width="4"/>
     <path d="M200 80 L200 112 M160 92 L176 118 M240 92 L224 118" stroke="${INK}" stroke-width="6" stroke-linecap="round"/></svg>`,
   // A notebook with a pencil and notes.
-  builder: () => `<svg viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#D5F0DD"/>
+  builder: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#D5F0DD"/>
     <rect x="100" y="50" width="200" height="210" rx="12" fill="#fff" stroke="${INK}" stroke-width="4"/>
     <path d="M126 100 h148 M126 140 h148 M126 180 h148 M126 220 h100" stroke="#BDC3C7" stroke-width="4" stroke-linecap="round"/>
     ${note(150, 140, '#8E44AD', 1.6)}${note(230, 180, '#E84393', 1.4)}
     <g transform="rotate(35 300 190)"><rect x="286" y="110" width="28" height="140" rx="4" fill="#F1C40F" stroke="${INK}" stroke-width="4"/>
     <path d="M286 250 L300 280 L314 250 Z" fill="#F5CBA7" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><rect x="286" y="104" width="28" height="18" rx="3" fill="#E84393" stroke="${INK}" stroke-width="4"/></g></svg>`,
   // A big waving hand and a sun coming up.
-  hello: () => `<svg viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#FFE9C7"/>${sun(200, 300, 110, '#FFC24D')}
+  hello: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#FFE9C7"/>${sun(200, 300, 110, '#FFC24D')}
     <g transform="translate(200 210) rotate(-12)" fill="#D9A877" stroke="${INK}" stroke-width="4" stroke-linejoin="round">
       <rect x="-42" y="-60" width="84" height="80" rx="30"/>
       <rect x="-40" y="-130" width="18" height="84" rx="9"/><rect x="-18" y="-146" width="18" height="100" rx="9"/>
@@ -515,7 +411,7 @@ const THUMBS = {
       <rect x="-76" y="-46" width="44" height="18" rx="9" transform="rotate(35 -54 -37)"/></g>
     <path d="M90 90 q -14 30 0 60 M66 76 q -22 44 0 88 M310 90 q 14 30 0 60 M334 76 q 22 44 0 88" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
   // Four picture choices.
-  choice: () => `<svg viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#E3E8FF"/>
+  choice: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#E3E8FF"/>
     <rect x="70" y="40" width="120" height="100" rx="14" fill="#FFD34D" stroke="${INK}" stroke-width="4"/>
     <rect x="210" y="40" width="120" height="100" rx="14" fill="#7DDB8B" stroke="${INK}" stroke-width="4"/>
     <rect x="70" y="160" width="120" height="100" rx="14" fill="#5DADE2" stroke="${INK}" stroke-width="4"/>
@@ -523,7 +419,7 @@ const THUMBS = {
     ${star(130, 90, 26, '#fff')}${note(262, 106, '#fff', 1.7)}
     <path d="M110 230 q 20 -40 40 0 q -20 20 -40 0 Z" fill="#fff"/><circle cx="270" cy="210" r="26" fill="#fff"/></svg>`,
   // A waving hand and the moon.
-  goodbye: () => `<svg viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#2B3A6B"/>
+  goodbye: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#2B3A6B"/>
     <circle cx="310" cy="70" r="34" fill="#F7F3D0"/><circle cx="326" cy="60" r="30" fill="#2B3A6B"/>
     ${star(70, 50, 6, '#fff')}${star(150, 30, 5, '#fff')}${star(240, 44, 4, '#fff')}${star(360, 160, 5, '#fff')}${star(40, 150, 4, '#fff')}
     <g transform="translate(200 230) rotate(12)" fill="#D9A877" stroke="${INK}" stroke-width="4" stroke-linejoin="round">

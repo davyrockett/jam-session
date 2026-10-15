@@ -277,4 +277,4 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sync.run(); });
 });
 // Wait until every activity's script has loaded.
-window.addEventListener('DOMContentLoaded', route);
+window.addEventListener('DOMContentLoaded', () => { Sketch.start(); route(); });

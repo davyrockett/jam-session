@@ -64,8 +64,15 @@ Live: https://davyrockett.github.io/jam-session/ See README.md for features.
   synth sound (`FX_SOUNDS` in app.js, `Groove.fx` in music.js). Tapping a person in the picture makes them hop;
   tapping a lyric line highlights it for singing along. Walter's Cruise cover uses the same speedboat as the
   "motor" page (David's request).
-- **Pictures are drawn in code (SVG)**: whole scenes in `art.js` (`SCENES`, people via `walter()`,
-  `sister()`, `marine()`, `captain()`), single things in `objects.js` (`OBJECTS`, 100×100, each with a
+- **Drawing process (David's request):** look up reference photos first (Wikimedia Commons in the browser),
+  build people from the **character kit** (`characters.js`: arms bend at the elbow and reach a target point,
+  fixed proportions, wheelchair drawn from references), and check every picture large on **`artcheck.html`**
+  (http://localhost:8773/artcheck.html, all surprises shown) before calling it done.
+- **Sketch style:** `sketch.js` redraws every `<svg data-sketch>` with Rough.js (`vendor/rough.js`, MIT):
+  wobbly pen outlines, light pencil shading only on bigger shapes (David: "use more sparingly"), flat
+  backgrounds, crisp faces (`class="noshade"` on heads), plus a paper grain in styles.css.
+- **Pictures are drawn in code (SVG)**: whole scenes in `art.js` (`SCENES`; people come from `characters.js`),
+  single things in `objects.js` (`OBJECTS`, 100×100, each with a
   `main` colour the Song Builder can swap). Walter is Black with short black hair and uses a wheelchair;
   his sisters Tish (pink, ponytail) and Mariana (purple, long hair) are tan with brown hair.
   Boats use the `--boat` colour picked on the Walter's Cruise cover (set via `style="fill:var(--boat)"`,
