@@ -50,10 +50,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 
 /* Picture book */
 .book { height: 100dvh; min-height: 0; }
-.page { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 22px; align-items: center; }
+.page { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  gap: 22px; align-items: center; }
 .page.enter { animation: pagein .35s ease-out; }
 @keyframes pagein { from { opacity: 0; transform: translateX(var(--from, 24px)); } to { opacity: 1; transform: none; } }
-.art { justify-self: center; width: min(100%, calc((100dvh - 190px) * 4 / 3)); aspect-ratio: 4 / 3; border-radius: 22px; overflow: hidden;
+/* The picture fills whatever room is left (never more), keeping its 4:3 shape. */
+.art-wrap { container-type: size; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.art { width: min(100cqw, 100cqh * 4 / 3); aspect-ratio: 4 / 3; border-radius: 22px; overflow: hidden;
   border: 1px solid var(--line); background: #BFE6FF; touch-action: pan-y; }
 .art svg { display: block; width: 100%; height: 100%; }
 .words { display: flex; flex-direction: column; justify-content: center; gap: 12px; min-width: 0;
@@ -68,7 +71,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .lyrics.chorus .line { font-family: var(--f-display); font-weight: 800; text-transform: uppercase; font-size: 1.3em; line-height: 1.02; letter-spacing: .01em; }
 .lyrics.chorus .line + .line { margin-top: .25em; }
 .line.big { font-family: var(--f-display); font-weight: 800; font-size: 1.9em; text-transform: uppercase; line-height: 1; color: var(--accent-ink); }
-.magic { font: inherit; color: var(--accent-ink); background: var(--accent-soft); border: 0; border-bottom: 4px solid var(--accent);
+.magic { font: inherit; text-transform: inherit; letter-spacing: inherit; color: var(--accent-ink); background: var(--accent-soft); border: 0; border-bottom: 4px solid var(--accent);
   border-radius: 10px 10px 4px 4px; padding: 0 .16em; margin: 0 -.02em; cursor: pointer; animation: hint 2.4s ease-in-out infinite; }
 .lyrics.chorus .magic { background: var(--surface); }
 .magic.done { animation: none; }
@@ -100,8 +103,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .dots span.on { background: var(--accent); }
 
 @media (max-aspect-ratio: 1/1) {
-  .page { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; }
-  .art { width: min(100%, calc((100dvh - 420px) * 4 / 3)); }
+  .page { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; gap: 14px; }
   .words { text-align: center; }
   .swatches { justify-content: center; }
 }

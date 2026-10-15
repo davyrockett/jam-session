@@ -22,7 +22,8 @@ const limb = (x1, y1, x2, y2, w, color) =>
 
 // An arm from the shoulder (sx, sy) reaching for (tx, ty). bend: 'out' (elbow away
 // from the body, side = -1 left / 1 right) or 'down'. Returns the drawing and the hand.
-function armTo(sx, sy, tx, ty, { side = 1, bend = 'out', sleeve, skin, longSleeve = false, L1 = KIT.armUpper, L2 = KIT.armLower } = {}) {
+// Elbows bend like real ones: down for reaching forward or resting, out for raised arms.
+function armTo(sx, sy, tx, ty, { side = 1, bend = ty < sy - 10 ? 'out' : 'down', sleeve, skin, longSleeve = false, L1 = KIT.armUpper, L2 = KIT.armLower } = {}) {
   const dx = tx - sx, dy = ty - sy;
   const d = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(L1 - L2) + 0.5), L1 + L2 - 0.5);
   const a = Math.atan2(dy, dx);
@@ -61,7 +62,7 @@ function walter({ x, y, s = 1, mood = 'smile', arm = 'lap', hat = false, shirt =
   const pants = '#34495E';
   const targets = { lap: [16, -62], wave: [32, -128], up: [26, -144], reach: [32, -86], mic: [16, -100], card: [32, -86] };
   const target = Array.isArray(arm) ? [(arm[0] - x) / s, (arm[1] - y) / s] : targets[arm] || targets.lap;
-  const a = armTo(-6, -94, target[0], target[1], { side: 1, bend: arm === 'lap' ? 'down' : 'out', sleeve: shirt, skin });
+  const a = armTo(-6, -94, target[0], target[1], { side: 1, sleeve: shirt, skin });
   let held = '';
   if (arm === 'mic') held = micAt(a.hand);
   if (arm === 'card') held = recipeCardAt(a.hand);

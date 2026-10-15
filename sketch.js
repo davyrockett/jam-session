@@ -63,6 +63,9 @@ const Sketch = (() => {
       const d = pathOf(el);
       if (!d) return;
       const hasFill = !isNone(fill), sw = parseFloat(cs.strokeWidth) || 0;
+      // Boats use the colour picked on the cover (a CSS variable): keep it live, don't bake it in.
+      const liveFill = (el.getAttribute('style') || '').match(/fill:\s*(var\([^;]+\))/);
+      const liveStroke = (el.getAttribute('style') || '').match(/stroke:\s*(var\([^;]+\))/);
       const hasStroke = !isNone(stroke) && sw > 0;
       const opacity = el.getAttribute('opacity');
       const seed = i + 7;
@@ -83,12 +86,16 @@ const Sketch = (() => {
         disableMultiStroke: thick, fill: hasFill ? fill : undefined, fillStyle: 'solid',
       };
       const g = add(rc.path(d, opts));
-      g.querySelectorAll('path').forEach((p) => { p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); });
+      g.querySelectorAll('path').forEach((p) => {
+        p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
+        if (liveFill && p.getAttribute('fill') && p.getAttribute('fill') !== 'none') p.style.fill = liveFill[1];
+        if (liveStroke && p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') p.style.stroke = liveStroke[1];
+      });
       // Light pencil shading, only on the bigger coloured shapes (David: use it sparingly).
       if (hasFill && size >= VW * 0.12 && !el.classList.contains('noshade')) {
-        const s = add(rc.path(d, { seed: seed + 1, stroke: 'none', fill: shade(fill, 0.8), fillStyle: 'hachure',
+        const s = add(rc.path(d, { seed: seed + 1, stroke: 'none', fill: liveFill ? 'rgb(0,0,0)' : shade(fill, 0.8), fillStyle: 'hachure',
           hachureGap: Math.max(VW / 50, size / 5), fillWeight: VW / 450, hachureAngle: -41, roughness: 1 }));
-        s.setAttribute('opacity', String(0.22 * (parseFloat(opacity) || 1)));
+        s.setAttribute('opacity', String((liveFill ? 0.1 : 0.22) * (parseFloat(opacity) || 1)));
       }
       el.remove();
     });

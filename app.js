@@ -139,7 +139,7 @@ function bookScreen(id, pageNum) {
 
   show(`<div class="screen book">
     <div class="topbar">${homeBtn(backTo)}<div class="title"><h2>${esc(song.title)}</h2><p id="page-count"></p></div>${song.id.startsWith('my-') ? `<a class="icon-btn" href="#/builder/edit/${song.id}">Edit</a>` : ''}${settingsBtn}</div>
-    <div class="page" id="page"><div class="art" id="art"></div><div class="words" id="words"></div></div>
+    <div class="page" id="page"><div class="art-wrap"><div class="art" id="art"></div></div><div class="words" id="words"></div></div>
     <div class="dots" id="dots">${pages.map(() => '<span></span>').join('')}</div>
     <div class="bottombar">
       <button type="button" class="big-btn prev" id="prev">${ICON.back}<span class="lbl">Back</span></button>
