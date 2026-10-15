@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jam Session</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jam Session">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F1F0EC">
+<script>
+const THEME_BG = { light: '#F1F0EC', dark: '#151310' };
+function applyTheme(t) {
+  const r = document.documentElement;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (t === 'auto') r.removeAttribute('data-theme');
+  else r.setAttribute('data-theme', t);
+  const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  meta.setAttribute('content', dark ? THEME_BG.dark : THEME_BG.light);
+}
+function savedTheme() { try { return JSON.parse(localStorage.getItem('js.theme')) || 'light'; } catch { return 'light'; } }
+applyTheme(savedTheme());
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app"></div>
+
+<dialog id="settings">
+  <div class="dlg">
+    <div class="dlg-head"><h2>Settings</h2><button type="button" class="icon-btn" id="settings-close" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="set-row"><div><b>Appearance</b><p class="cap">Auto follows your device's light or dark setting.</p></div>
+      <div class="seg" role="group" aria-label="Appearance">
+        <button type="button" data-theme-v="light">Light</button><button type="button" data-theme-v="dark">Dark</button><button type="button" data-theme-v="auto">Auto</button>
+      </div></div>
+    <div class="set-row"><div><b>Music speed</b><p class="cap">For the songbook's backing music.</p></div>
+      <div class="seg" role="group" aria-label="Music speed">
+        <button type="button" data-bpm="80">Slower</button><button type="button" data-bpm="92">Normal</button><button type="button" data-bpm="104">Faster</button>
+      </div></div>
+    <div class="set-row"><div><b>App version</b><p class="cap" id="ver-line"></p></div><button type="button" class="btn" id="set-update">Check for updates</button></div>
+  </div>
+</dialog>
+
+<div class="update" id="update-banner" role="status" hidden><span>A new version is ready.</span><button type="button" class="btn primary" id="update-btn">Update</button></div>
+
+<script src="art.js"></script>
+<script src="objects.js"></script>
+<script src="songs.js"></script>
+<script src="music.js"></script>
+<script src="app.js"></script>
+<script src="react.js"></script>
+<script src="choice.js"></script>
+<script src="builder.js"></script>
+<script>
+// Settings: appearance, music speed and app updates (saved on this device).
+function markSettings() {
+  const cur = savedTheme();
+  document.querySelectorAll('[data-theme-v]').forEach(b => b.setAttribute('aria-pressed', b.dataset.themeV === cur));
+  const bpm = store.get('bpm', 92);
+  document.querySelectorAll('[data-bpm]').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.bpm) === bpm));
+}
+document.querySelectorAll('[data-theme-v]').forEach(b => b.addEventListener('click', () => {
+  store.set('theme', b.dataset.themeV);
+  applyTheme(b.dataset.themeV);
+  markSettings();
+}));
+document.querySelectorAll('[data-bpm]').forEach(b => b.addEventListener('click', () => {
+  store.set('bpm', Number(b.dataset.bpm));
+  Groove.bpm = Number(b.dataset.bpm);
+  markSettings();
+}));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme(savedTheme()));
+function openSettings() {
+  markSettings();
+  $('ver-line').textContent = `You're on ${window.APP_VERSION}.`;
+  $('set-update').disabled = false;
+  $('settings').showModal();
+}
+$('settings-close').addEventListener('click', () => $('settings').close());
+$('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').close(); });
+$('set-update').addEventListener('click', async () => {
+  const ver = $('ver-line'), ub = $('set-update'), reg = window.SW_REG;
+  if (!reg || !navigator.onLine) { ver.textContent = 'Connect to the internet, then try again.'; return; }
+  ub.disabled = true;
+  ver.textContent = 'Checking…';
+  try { await reg.update(); } catch {}
+  const w = reg.waiting || reg.installing;
+  if (w) {
+    ver.textContent = 'Updating now…';
+    const go = () => w.postMessage('skipWaiting');
+    if (w.state === 'installed') go();
+    else w.addEventListener('statechange', () => { if (w.state === 'installed') go(); });
+  } else {
+    ver.textContent = `You're on the latest version (${window.APP_VERSION}).`;
+    ub.disabled = false;
+  }
+});
+</script>
+
+<script>
+// Offline support + updates. See sw.js.
+// The version shown in Settings. tools/bump.sh keeps this in step with VERSION in sw.js.
+window.APP_VERSION = 'v1';
+(async () => {
+  if (!('serviceWorker' in navigator)) return;
+  // The test copy on the Mac (Start Jam Session.command) always loads fresh files.
+  if (['localhost', '127.0.0.1'].includes(location.hostname)) {
+    (await navigator.serviceWorker.getRegistrations()).forEach((r) => r.unregister());
+    return;
+  }
+  const reg = await navigator.serviceWorker.register('sw.js');
+  window.SW_REG = reg;
+  const banner = document.getElementById('update-banner');
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  const apply = (worker) => worker.postMessage('skipWaiting');
+  // Right after the app opens, updates apply on their own.
+  // Later on, offer a banner instead of reloading in the middle of an activity.
+  const justOpened = () => performance.now() < 20000;
+  const handle = (worker) => {
+    if (!worker || !navigator.serviceWorker.controller) return;
+    if (justOpened()) apply(worker);
+    else {
+      banner.hidden = false;
+      document.getElementById('update-btn').onclick = () => apply(worker);
+    }
+  };
+  const watch = (worker) => {
+    if (!worker) return;
+    if (worker.state === 'installed') return handle(worker);
+    worker.addEventListener('statechange', () => { if (worker.state === 'installed') handle(worker); });
+  };
+  handle(reg.waiting);
+  watch(reg.installing);
+  reg.addEventListener('updatefound', () => watch(reg.installing));
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController && !reloaded) { reloaded = true; location.reload(); }
+  });
+  const check = () => { if (navigator.onLine) reg.update().catch(() => {}).then(() => handle(reg.waiting)); };
+  check();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+})();
+</script>
+</body>
+</html>
