@@ -51,14 +51,19 @@ Live: https://davyrockett.github.io/jam-session/ See README.md for features.
 
 - **Privacy:** one shared app, no client profiles. Songs use **first names only** (David's choice; the repo is
   public). Hello/Goodbye ask for a name each time and never save it.
-- **Song Builder songs sync** across devices (David asked for this): `sync.js` keeps them in the **private**
-  repo davyrockett/jam-session-data (`data.json`: `songs` + `deleted`), same scheme as Health Log
+- **Song Builder songs sync** across devices (David asked for this): `sync.js` keeps them in the
+  **public** repo davyrockett/jam-session-data (David: "nothing needs to be private, I will only use first names") (`data.json`: `songs` + `deleted`), same scheme as Health Log
   (newest edit wins, deletions remembered). Each device needs David's fine-grained access key pasted in
   Settings (stored on the device only). Always save/delete through `saveMySong()` / `deleteMySong()`.
   Local copy is localStorage `js.songs`; the app syncs on open and when it comes back to the front.
 - **Activities** (menu in `app.js` `ACTIVITIES`): Songbook (picture books, `songs.js`), Cause & Effect
   (`react.js`), Song Builder (`builder.js`), Hello / Goodbye (`ROUTINES` in `songs.js`, read with the
   same book reader), Choice Board (`choice.js`). Screens are chosen by the `#/…` address (`route()` in app.js).
+- **Magic words:** in lyrics, `[word](name)` becomes a tappable orange word. Tapping it sets off the picture's
+  parts named `name`: `reveal()` parts are hidden until tapped, `play()` parts hop/shake/board (art.js), plus a
+  synth sound (`FX_SOUNDS` in app.js, `Groove.fx` in music.js). Tapping a person in the picture makes them hop;
+  tapping a lyric line highlights it for singing along. Walter's Cruise cover uses the same speedboat as the
+  "motor" page (David's request).
 - **Pictures are drawn in code (SVG)**: whole scenes in `art.js` (`SCENES`, people via `walter()`,
   `sister()`, `marine()`, `captain()`), single things in `objects.js` (`OBJECTS`, 100×100, each with a
   `main` colour the Song Builder can swap). Walter is Black with short black hair and uses a wheelchair;

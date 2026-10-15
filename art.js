@@ -303,91 +303,129 @@ function numberBall(x, y, n, bounce) {
 
 // ---------- Scenes ----------
 
+// Tappable parts of a picture. Tapping a magic word in the lyrics (or the thing itself)
+// sets them off:
+//   reveal(name, …)    hidden until its word is tapped, then pops in
+//   play(name, anim, …) moves when its word is tapped (anim: hop, shake, board)
+// A name can appear on several parts; they all go off together.
+const reveal = (name, inner, cls = '') => `<g data-fx="${name}" class="reveal ${cls}">${inner}</g>`;
+const play = (name, anim, inner) => `<g data-fx="${name}" data-anim="${anim}">${inner}</g>`;
+const hop = (inner) => play('tap', 'hop', inner);
+
+function shout(x, y, text, size = 34, fill = '#fff') {
+  return `<text x="${x}" y="${y}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="${size}" fill="${fill}" stroke="${INK}" stroke-width="4" paint-order="stroke" stroke-linejoin="round">${text}</text>`;
+}
+function sparkles(list) { return list.map(([x, y, r, c]) => star(x, y, r, c || '#F1C40F')).join(''); }
+
+function palmIsland(x, y) {
+  return `<ellipse cx="${x}" cy="${y}" rx="46" ry="12" fill="#F5D99B"/>
+    <path d="M${x + 4} ${y - 4} Q ${x + 10} ${y - 40} ${x + 2} ${y - 70}" stroke="#8B5A2B" stroke-width="7" fill="none" stroke-linecap="round"/>
+    ${[[-34, -8], [-20, -26], [16, -28], [32, -6], [0, -36]].map(([dx, dy]) =>
+      `<path d="M${x + 2} ${y - 70} Q ${x + 2 + dx * 0.6} ${y - 70 + dy - 12} ${x + 2 + dx} ${y - 70 + dy + 10}" stroke="#27AE60" stroke-width="9" fill="none" stroke-linecap="round"/>`).join('')}`;
+}
+
+// The captain's speedboat with Walter and the captain aboard (cover and the "motor" page).
+function speedboatCrew({ walterMood = 'big', walterArm = 'wave' } = {}) {
+  return `<circle cx="44" cy="218" r="13" fill="#fff"/><circle cx="26" cy="204" r="10" fill="#fff"/><circle cx="44" cy="196" r="7" fill="#fff"/><circle cx="16" cy="222" r="8" fill="#fff"/>
+    ${hop(walter({ x: 150, y: 228, s: 0.95, mood: walterMood, arm: walterArm }))}
+    ${hop(`${captain({ x: 236, y: 226, s: 0.95 })}`)}${steeringWheel(270, 186, 11)}
+    ${speedboat(200, 248, 1.05)}`;
+}
+
+function chorusScene(sunset) {
+  const back = sunset
+    ? `${rays(200, 210, '#FFB067', '#FFC48A')}${sun(200, 214, 60, '#FF7A45')}${gulls([[80, 70], [102, 82, 0.8], [300, 64]])}`
+    : rays(200, 150, '#FFE08A', '#FFD34D');
+  return `${back}
+    ${reveal('stars', sparkles([[40, 44, 14], [360, 50, 16], [250, 30, 10, '#fff'], [140, 36, 11, '#fff'], [70, 120, 9, '#fff'], [330, 130, 10]]))}
+    ${reveal('confetti', confetti(sunset ? 5 : 3), 'fall')}
+    <rect x="0" y="236" width="400" height="64" style="fill:${BOAT}"/><rect x="0" y="236" width="400" height="8" fill="${INK}" opacity=".25"/>
+    ${play('shake', 'shake', sister({ x: 92, y: 262, s: 1.05, who: 'tish', mood: 'big', arm: 'up' }))}
+    ${play('shake', 'shake', sister({ x: 312, y: 262, s: 1.05, who: 'mariana', mood: 'big', arm: 'up' }))}
+    ${play('pump', 'hop', `<g class="pump">${walter({ x: 196, y: 272, s: 1.2, mood: 'big', arm: 'up' })}</g>`)}`;
+}
+
 const SCENES = {
-  // Cover: the cruise ship heading out, Walter waving from the deck.
+  // Cover: Walter and the captain out on the speedboat (the same boat as the "motor" page).
   cover: () => `${sky()}${sun(338, 52, 28)}${cloud(70, 56, 1.1)}${cloud(230, 36, 0.8)}${gulls([[150, 70], [172, 82, 0.8], [292, 96, 0.7]])}
-    <g class="bob">${ship(200, 236, 0.92)}${walter({ x: 290, y: 167, s: 0.42, mood: 'big', arm: 'wave' })}</g>${sea(232)}`,
+    ${palmIsland(340, 236)}
+    <g class="bob">${speedboatCrew({ walterArm: 'wave' })}</g>${sea(240)}`,
 
-  // "Of course he's gonna bring his blender on the cruise"
+  // "…go on a cruise / bring his blender on the cruise. Oh yeah"
   blender: () => `${deck()}${sun(352, 44, 26)}${cloud(90, 50)}${gulls([[230, 60], [252, 72, 0.8]])}
+    ${reveal('horn', `${shout(120, 112, 'TOOT TOOT!', 38)}`)}
     <circle cx="66" cy="182" r="20" fill="none" style="stroke:${BOAT}" stroke-width="9"/><circle cx="66" cy="182" r="20" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="10 21"/>
-    ${walter({ x: 150, y: 286, s: 1.25, mood: 'big', arm: 'reach' })}
+    ${reveal('yeah', sparkles([[110, 120, 12], [196, 112, 10], [86, 200, 8, '#fff'], [214, 176, 9, '#fff']]))}
+    ${play('yeah', 'hop', walter({ x: 150, y: 286, s: 1.25, mood: 'big', arm: 'reach' }))}
     <rect x="232" y="206" width="120" height="12" rx="3" fill="#8B5A2B"/><rect x="246" y="218" width="9" height="70" fill="#7A4A22"/><rect x="330" y="218" width="9" height="70" fill="#7A4A22"/>
-    <g class="wiggle">${blender(292, 206, 1.15)}</g>`,
+    ${play('blend', 'shake', blender(292, 206, 1.15))}
+    ${reveal('blend', `${shout(300, 96, 'WHIRRR!', 34)}<circle cx="262" cy="118" r="5" fill="#7DDB8B"/><circle cx="334" cy="120" r="6" fill="#7DDB8B"/><circle cx="318" cy="96" r="4" fill="#7DDB8B"/>`)}`,
 
-  // "Walter's sister loves salad ... he's going to give her the recipe"
+  // "Walter's sister loves salad … give her the recipe for salad. That's right"
   salad: () => `${deck('#CDEBFF')}${sun(60, 46, 22)}${cloud(300, 46)}
-    ${heart(296, 70, 1.4)}${heart(320, 52, 1)}${heart(276, 50, 0.8)}
+    ${reveal('love', `${heart(296, 74, 1.6)}${heart(322, 52, 1.1)}${heart(272, 50, 0.9)}${heart(340, 86, 0.8)}`)}
     <rect x="160" y="226" width="90" height="10" rx="3" fill="#8B5A2B"/><rect x="170" y="236" width="8" height="52" fill="#7A4A22"/><rect x="232" y="236" width="8" height="52" fill="#7A4A22"/>
-    ${bottle(205, 226, 0.95)}
-    ${walter({ x: 100, y: 286, s: 1.2, mood: 'big', arm: 'card' })}
-    ${sister({ x: 300, y: 290, s: 1.2, who: 'mariana', mood: 'big', arm: 'bowl' })}`,
+    ${play('love', 'shake', bottle(205, 226, 0.95))}
+    ${reveal('recipe', sparkles([[130, 160, 9], [160, 172, 7, '#fff'], [150, 140, 6]]) + shout(150, 128, 'RECIPE!', 26))}
+    ${play('recipe', 'hop', walter({ x: 100, y: 286, s: 1.2, mood: 'big', arm: 'card' }))}
+    ${play('right', 'hop', sister({ x: 300, y: 290, s: 1.2, who: 'mariana', mood: 'big', arm: 'bowl' }))}
+    ${reveal('right', `${shout(300, 104, "THAT'S RIGHT!", 30)}`)}`,
 
   // Chorus: "That's what I do / They can't stop us / Not a chance / We were born for this"
-  chorus: () => `${rays(200, 150, '#FFE08A', '#FFD34D')}${confetti(3)}
-    <rect x="0" y="236" width="400" height="64" style="fill:${BOAT}"/><rect x="0" y="236" width="400" height="8" fill="${INK}" opacity=".25"/>
-    ${sister({ x: 92, y: 262, s: 1.05, who: 'tish', mood: 'big', arm: 'up' })}
-    ${sister({ x: 312, y: 262, s: 1.05, who: 'mariana', mood: 'big', arm: 'up' })}
-    <g class="pump">${walter({ x: 196, y: 272, s: 1.2, mood: 'big', arm: 'up' })}</g>
-    ${star(40, 40, 12)}${star(360, 46, 14)}${star(250, 30, 8, '#fff')}${star(140, 34, 9, '#fff')}`,
+  chorus: () => chorusScene(false),
 
-  // "The captain revved the motor and he was like what!?"
+  // "…he saw the water / The captain revved the motor and he was like WHAT!?"
   motor: () => `${sky()}${cloud(330, 56)}
-    <path d="M300 112 h50 M286 128 h60 M306 144 h40" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
-    ${bubble(30, 48, 130, 64, 'WHAT!?', 108, 112)}
-    <g class="zoom">
-      <circle cx="44" cy="218" r="13" fill="#fff"/><circle cx="26" cy="204" r="10" fill="#fff"/><circle cx="44" cy="196" r="7" fill="#fff"/><circle cx="16" cy="222" r="8" fill="#fff"/>
-      ${walter({ x: 150, y: 228, s: 0.95, mood: 'wow', arm: 'lap' })}
-      ${captain({ x: 236, y: 226, s: 0.95 })}${steeringWheel(270, 186, 11)}
-      ${speedboat(200, 248, 1.05)}
-    </g>${sea(240)}
-    <path d="M62 256 Q 34 264 6 256 M70 270 Q 42 278 14 272" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>`,
+    ${reveal('zoom', `<path d="M300 112 h50 M286 128 h60 M306 144 h40" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`)}
+    ${reveal('bubble', bubble(30, 48, 130, 64, 'WHAT!?', 108, 112))}
+    ${play('zoom', 'shake', `<g class="zoom">${speedboatCrew({ walterMood: 'wow', walterArm: 'lap' })}</g>`)}
+    ${sea(240)}
+    ${reveal('zoom', `<path d="M62 256 Q 34 264 6 256 M70 270 Q 42 278 14 272" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>`)}
+    ${reveal('splash', [[300, 230, 9], [318, 214, 7], [338, 226, 8], [356, 210, 6], [96, 232, 7], [76, 218, 6]].map(([x, y, r]) =>
+      `<path d="M${x} ${y - r * 1.8} Q ${x + r} ${y} ${x} ${y + r} Q ${x - r} ${y} ${x} ${y - r * 1.8} Z" fill="#BFE6FF" stroke="#1B6CB8" stroke-width="2"/>`).join('') + shout(330, 186, 'SPLASH!', 30))}`,
 
-  // "The Marines helped me onto the boat, I said 1, 2, 3"
+  // "…a little bit scary … The Marines helped me onto the boat, I said 1, 2, 3"
   marines: () => `${sky()}${sun(360, 40, 20)}
-    ${numberBall(120, 50, 1, 0)}${numberBall(200, 40, 2, 0.25)}${numberBall(280, 50, 3, 0.5)}
+    ${reveal('n1', numberBall(120, 50, 1, 0))}${reveal('n2', numberBall(200, 40, 2, 0.25))}${reveal('n3', numberBall(280, 50, 3, 0.5))}
     <rect x="0" y="210" width="400" height="90" fill="#2E86DE"/>
     <g class="bob">${speedboat(370, 252, 1.05, { motor: false, windshield: false })}</g>
     <rect x="0" y="206" width="104" height="14" fill="#A0522D" stroke="#5D2E0F" stroke-width="2"/>
     <rect x="12" y="220" width="12" height="80" fill="#8B4513"/><rect x="74" y="220" width="12" height="80" fill="#8B4513"/>
     <path d="M100 210 L 290 216" stroke="#8B4513" stroke-width="9" stroke-linecap="round"/>
     <path d="M100 196 L 290 202" stroke="#8B4513" stroke-width="3"/>
-    ${marine({ x: 104, y: 206, s: 1, skin: '#C68B5E', arm: 'help' })}
-    ${walter({ x: 186, y: 210, s: 1.0, mood: 'big', arm: 'lap' })}
-    ${marine({ x: 270, y: 212, s: 1, skin: '#8D5524', arm: 'help', flip: true })}
+    ${play('marines', 'hop', marine({ x: 104, y: 206, s: 1, skin: '#C68B5E', arm: 'help' }))}
+    ${play('n3', 'stepaside', play('marines', 'hop', marine({ x: 270, y: 212, s: 1, skin: '#8D5524', arm: 'help', flip: true })))}
+    ${play('n3', 'board', play('scary', 'shake', walter({ x: 186, y: 210, s: 1.0, mood: 'big', arm: 'lap' })))}
     ${sea(262)}`,
 
   // "We sang Boyz II Men on the cruise"
   sing: () => `<rect width="400" height="300" fill="#1F2A5A"/>
     ${star(40, 36, 4, '#fff')}${star(120, 22, 3, '#fff')}${star(300, 30, 4, '#fff')}${star(370, 70, 3, '#fff')}${star(220, 18, 3, '#fff')}
     <circle cx="340" cy="44" r="20" fill="#F7F3D0"/><circle cx="350" cy="38" r="17" fill="#1F2A5A"/>
-    <path d="M70 0 L 20 250 L 150 250 Z" fill="#FFE08A" opacity=".22"/><path d="M330 0 L 250 250 L 380 250 Z" fill="#FFE08A" opacity=".22"/>
-    <path d="M200 0 L 140 250 L 260 250 Z" fill="#FFE08A" opacity=".28"/>
+    ${reveal('lights', `<path d="M70 0 L 20 250 L 150 250 Z" fill="#FFE08A" opacity=".25"/><path d="M330 0 L 250 250 L 380 250 Z" fill="#FFE08A" opacity=".25"/>
+      <path d="M200 0 L 140 250 L 260 250 Z" fill="#FFE08A" opacity=".3"/>`)}
     <rect x="0" y="246" width="400" height="54" fill="#6D3B1A"/><rect x="0" y="246" width="400" height="8" fill="#8B5A2B"/>
-    <g class="float">${note(60, 120, '#FFD34D')}${note(338, 128, '#E84393')}${note(150, 74, '#7DDB8B', 0.9)}${note(270, 82, '#5DADE2', 0.9)}</g>
-    ${sister({ x: 84, y: 258, s: 1.05, who: 'tish', mood: 'sing', arm: 'mic' })}
-    ${sister({ x: 316, y: 258, s: 1.05, who: 'mariana', mood: 'sing', arm: 'mic' })}
-    ${walter({ x: 192, y: 266, s: 1.15, mood: 'sing', arm: 'mic' })}`,
+    ${reveal('lights', `<g class="float">${note(60, 120, '#FFD34D')}${note(338, 128, '#E84393')}${note(150, 74, '#7DDB8B', 0.9)}${note(270, 82, '#5DADE2', 0.9)}</g>`)}
+    ${hop(sister({ x: 84, y: 258, s: 1.05, who: 'tish', mood: 'sing', arm: 'mic' }))}
+    ${hop(sister({ x: 316, y: 258, s: 1.05, who: 'mariana', mood: 'sing', arm: 'mic' }))}
+    ${play('mic', 'hop', walter({ x: 192, y: 266, s: 1.15, mood: 'sing', arm: 'mic' }))}
+    ${reveal('mic', shout(200, 60, 'YEAH!', 40))}`,
 
-  // "My sister Tish was driving the boat and then my sister Mariana and then me"
+  // "My sister Tish was driving the boat and then my sister Mariana and then ME!"
   drive: () => `${sky('#C6EAFF')}${sun(56, 48, 24)}${cloud(250, 46)}${gulls([[320, 92], [342, 80, 0.8]])}
     <g class="bob">
-      ${sister({ x: 92, y: 232, s: 0.95, who: 'tish', mood: 'big', arm: 'up' })}
-      ${sister({ x: 140, y: 232, s: 0.95, who: 'mariana', mood: 'big', arm: 'wave' })}
-      ${walter({ x: 220, y: 236, s: 1.05, mood: 'big', arm: 'reach', hat: true })}
+      ${play('tish', 'hop', sister({ x: 92, y: 232, s: 0.95, who: 'tish', mood: 'big', arm: 'up' }))}
+      ${play('mariana', 'hop', sister({ x: 140, y: 232, s: 0.95, who: 'mariana', mood: 'big', arm: 'wave' }))}
+      ${play('me', 'hop', walter({ x: 220, y: 236, s: 1.05, mood: 'big', arm: 'reach' }) +
+        reveal('me', `<g transform="translate(220 236) scale(1.05)">${captainHat(-7, -126)}</g>`))}
       <rect x="244" y="178" width="30" height="58" rx="4" fill="#ECF0F1" stroke="${INK}" stroke-width="2"/>
       ${steeringWheel(252, 160, 14)}
       ${speedboat(200, 262, 1.15)}
-    </g>${sea(254)}`,
+    </g>${sea(254)}
+    ${reveal('tish', shout(66, 84, 'TISH!', 28))}${reveal('mariana', shout(158, 40, 'MARIANA!', 26))}${reveal('me', shout(296, 62, 'WALTER!', 34))}`,
 
-  // Last chorus at sunset.
-  finale: () => `${rays(200, 210, '#FFB067', '#FFC48A')}${sun(200, 214, 60, '#FF7A45')}
-    ${gulls([[80, 70], [102, 82, 0.8], [300, 64]])}
-    <rect x="0" y="236" width="400" height="64" style="fill:${BOAT}"/><rect x="0" y="236" width="400" height="8" fill="${INK}" opacity=".25"/>
-    <g class="float">${note(46, 120, '#fff')}${note(356, 112, '#fff')}${note(250, 70, '#FFE08A', 0.8)}</g>
-    ${sister({ x: 92, y: 262, s: 1.05, who: 'tish', mood: 'big', arm: 'up' })}
-    ${sister({ x: 312, y: 262, s: 1.05, who: 'mariana', mood: 'big', arm: 'up' })}
-    <g class="pump">${walter({ x: 196, y: 272, s: 1.2, mood: 'big', arm: 'up' })}</g>`,
+  // Last chorus, at sunset.
+  finale: () => chorusScene(true),
 };
 
 // A big open hand, waving (used on the hello and goodbye pages).

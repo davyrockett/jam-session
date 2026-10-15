@@ -139,6 +139,41 @@ const Groove = (() => {
       const scale = [67, 69, 71, 74, 76, 79];
       pan(scale[Math.floor(Math.random() * scale.length)], ctx.currentTime + 0.01, 1.6 * level);
     },
+    // Sound effects for the magic words (synth only, no voices).
+    async fx(kind) {
+      setup();
+      if (ctx.state !== 'running') await ctx.resume();
+      out.gain.cancelScheduledValues(ctx.currentTime);
+      out.gain.setValueAtTime(0.9, ctx.currentTime);
+      const t = ctx.currentTime + 0.01;
+      const sweep = (type, f1, f2, dur, peak = 0.18, filter) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type;
+        o.frequency.setValueAtTime(f1, t);
+        o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+        env(g, t, peak, 0.01, dur);
+        if (filter) { const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = filter; o.connect(f).connect(g); } else o.connect(g);
+        g.connect(out); o.start(t); o.stop(t + dur + 0.1);
+      };
+      const arp = (notes, gap = 0.09, level = 1.4) => notes.forEach((m, i) => pan(m, t + i * gap, level));
+      const NOTES = { n1: [67], n2: [71], n3: [74, 79] };
+      if (NOTES[kind]) return arp(NOTES[kind], 0.12, 1.8);
+      switch (kind) {
+        case 'boing': sweep('sine', 180, 900, 0.35, 0.25); break;
+        case 'motor': sweep('sawtooth', 55, 190, 0.9, 0.16, 700); break;
+        case 'whirr': sweep('sawtooth', 140, 260, 0.8, 0.09, 1600); hiss(t, 1200, 'bandpass', 2, 0.12, 0.8); break;
+        case 'splash': hiss(t, 2400, 'bandpass', 0.8, 0.35, 0.5); hiss(t + 0.08, 5000, 'highpass', 0.7, 0.15, 0.4); break;
+        case 'horn': [0, 0.32].forEach((d) => { const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+          o.type = o2.type = 'square'; o.frequency.value = 196; o2.frequency.value = 247; f.type = 'lowpass'; f.frequency.value = 900;
+          g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.08, t + d + 0.02); g.gain.setTargetAtTime(0.0001, t + d + 0.2, 0.03);
+          o.connect(f); o2.connect(f); f.connect(g).connect(out); o.start(t + d); o2.start(t + d); o.stop(t + d + 0.4); o2.stop(t + d + 0.4); }); break;
+        case 'cheer': arp([67, 71, 74, 79, 83], 0.07); for (let i = 0; i < 6; i++) hiss(t + i * 0.08, 7500, 'highpass', 0.7, 0.08, 0.06); break;
+        case 'twinkle': arp([86, 91, 88, 93], 0.1, 0.9); break;
+        case 'notes': arp([67, 71, 74, 71, 79], 0.14); break;
+        case 'shake': sweep('sine', 330, 300, 0.12, 0.15); sweep('sine', 300, 330, 0.12, 0.12); break;
+        default: pan([67, 69, 71, 74, 76, 79][Math.floor(Math.random() * 6)], t, 1.6);
+      }
+    },
     stop() {
       if (!ctx) return;
       playing = false;

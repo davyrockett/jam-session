@@ -8,7 +8,9 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
 ## What's in it
 
 - **Songbook** – picture books of the songs written in sessions (starting with *Walter's Cruise*).
-  Turn pages with the big Back / Next buttons or by swiping the picture. On the Walter's Cruise
+  Turn pages with the big Back / Next buttons or by swiping the picture. Tap the **orange words** to make
+  things happen in the picture (the WHAT!? bubble, the 1, 2, 3 balls, confetti…), tap anyone in the picture to
+  make them hop, and tap a line to highlight it while you sing it. On the Walter's Cruise
   cover, Walter picks the colour of the boat and every boat in the book changes.
   **Music** plays a laid-back island groove in G major (to match Walter's Hapi drum) that follows the verse
   and chorus. Leave it off when you're playing guitar.
@@ -27,7 +29,7 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
 
 Light / Dark / Auto, music speed, sync, and Check for updates.
 
-**Sync Song Builder songs:** songs you build are saved in your private GitHub project
+**Sync Song Builder songs:** songs you build are saved in your GitHub project
 `jam-session-data`, so every device shows the same songs. Set it up once on each device by pasting your
 access key in Settings (the steps are under "How to get an access key"). The app syncs whenever it opens.
 

@@ -1,5 +1,5 @@
 // Keeps Song Builder songs the same on every device.
-// The songs live in one file, data.json, in the private GitHub project
+// The songs live in one file, data.json, in the GitHub project
 // davyrockett/jam-session-data. Each time it syncs, the app:
 //   1. downloads data.json,
 //   2. merges it with the songs on this device (the newest edit of each song wins;

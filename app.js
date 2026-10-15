@@ -98,6 +98,36 @@ function shelfScreen() {
 let sessionName = '';
 const withName = (line) => line.replace(/ ?\{name\}/, sessionName ? ` ${sessionName}` : '');
 
+// Magic words: [word](name) in a lyric becomes a button that sets off the picture's
+// parts called name (see reveal() / play() in art.js), with a sound effect.
+const FX_SOUNDS = {
+  bubble: 'boing', zoom: 'motor', splash: 'splash', blend: 'whirr', horn: 'horn',
+  n1: 'n1', n2: 'n2', n3: 'n3', confetti: 'cheer', stars: 'twinkle', lights: 'notes', shake: 'shake',
+};
+
+function lyricLine(line) {
+  const plain = line.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  const big = plain === plain.toUpperCase() && /[A-Z]/.test(plain);   // a line in capitals, like "WHAT!?", is extra big
+  const html = esc(line).replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, word, name) => `<button type="button" class="magic" data-fx-word="${name}">${word}</button>`);
+  return `<p class="line${big ? ' big' : ''}">${html}</p>`;
+}
+
+function fire(name) {
+  const art = $('art');
+  if (!art) return;
+  art.querySelectorAll(`[data-fx="${name}"]`).forEach((el) => {
+    if (el.classList.contains('reveal')) {
+      if (el.classList.contains('shown')) { el.classList.remove('shown'); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('shown'))); }
+      else el.classList.add('shown');
+    }
+    if (el.dataset.anim) {
+      if (['board', 'stepaside'].includes(el.dataset.anim) && el.classList.contains('go')) return;   // already moved
+      el.classList.remove('go'); void el.getBoundingClientRect(); el.classList.add('go');
+    }
+  });
+  Groove.fx(FX_SOUNDS[name] || 'pop');
+}
+
 function bookScreen(id, pageNum) {
   const song = [...allSongs(), ...ROUTINES].find((s) => s.id === id);
   if (!song) return go('#/songs', true);
@@ -135,10 +165,11 @@ function bookScreen(id, pageNum) {
           `<button type="button" class="swatch" style="background:${c}" data-boat="${c}" aria-label="${name}" aria-pressed="${c === chosen}"></button>`).join('')}</div>`;
       $('words').innerHTML = `<h1 class="cover-title">${esc(song.title)}</h1><p class="by">By ${esc(song.by)}</p>${boatQuestion}`;
     } else {
-      // A line written in capitals (like "WHAT!?") is shown extra big.
-      const lines = p.lines.map(withName).map((l) => `<p${l === l.toUpperCase() && /[A-Z]/.test(l) ? ' class="big"' : ''}>${esc(l)}</p>`).join('');
-      const pill = !song.pages.some((pg) => pg.part === 'chorus') ? '' : `<span class="pill ${p.part}">${p.part === 'chorus' ? 'Chorus' : 'Verse'}</span>`;
-      $('words').innerHTML = `${pill}${lines}${p.note ? `<p class="by">${esc(p.note)}</p>` : ''}`;
+      const label = !song.pages.some((pg) => pg.part === 'chorus') ? '' :
+        `<span class="pill ${p.part}">${p.part === 'chorus' ? 'Chorus' : `Verse ${verseNumber(n)}`}</span>`;
+      const lines = p.lines.map(withName).map(lyricLine).join('');
+      const hint = p.lines.some((l) => l.includes('](')) ? '<p class="tip">Tap the orange words.</p>' : '';
+      $('words').innerHTML = `<div class="lyrics ${p.part}">${label}${lines}${p.note ? `<p class="note">${esc(p.note)}</p>` : ''}</div>${hint}`;
     }
     $('page-count').textContent = n === 0 ? (song.routine ? 'Start' : 'Cover') : `Page ${n} of ${pages.length - 1}`;
     [...$('dots').children].forEach((d, i) => d.classList.toggle('on', i === n));
@@ -150,6 +181,13 @@ function bookScreen(id, pageNum) {
     history.replaceState(null, '', `#/song/${song.id}/${n}`);
   }
 
+  // Verse 1, 2, 3…: a new verse starts on a verse page right after the cover or a chorus.
+  const verseNumber = (i) => {
+    let v = 0;
+    for (let k = 1; k <= i; k++) if (pages[k].part === 'verse' && (k === 1 || pages[k - 1].part === 'chorus')) v++;
+    return v;
+  };
+
   const turn = (dir) => {
     if (dir > 0 && n === pages.length - 1) n = 0;
     else n = Math.max(0, Math.min(pages.length - 1, n + dir));
@@ -158,6 +196,16 @@ function bookScreen(id, pageNum) {
   $('prev').onclick = () => turn(-1);
   $('next').onclick = () => turn(1);
   $('words').addEventListener('click', (e) => {
+    const word = e.target.closest('[data-fx-word]');
+    if (word) { word.classList.add('done'); fire(word.dataset.fxWord); return; }
+    // Tap a line to highlight it while you sing it.
+    const line = e.target.closest('.line');
+    if (line) {
+      const on = !line.classList.contains('now');
+      $('words').querySelectorAll('.line').forEach((l) => l.classList.remove('now'));
+      line.classList.toggle('now', on);
+      return;
+    }
     const b = e.target.closest('[data-boat]');
     if (!b) return;
     store.set('boat', b.dataset.boat);
@@ -175,7 +223,14 @@ function bookScreen(id, pageNum) {
   $('art').addEventListener('pointerup', (e) => {
     if (sx === null) return;
     const dx = e.clientX - sx; sx = null;
-    if (Math.abs(dx) > 50) turn(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 50) return turn(dx < 0 ? 1 : -1);
+    // A tap on someone in the picture: they hop (or do whatever their word does).
+    const part = e.target.closest('[data-anim]');
+    if (part) {
+      const name = part.dataset.fx;
+      if (name === 'tap') { part.classList.remove('go'); void part.getBoundingClientRect(); part.classList.add('go'); Groove.fx('pop'); }
+      else { fire(name); $('words').querySelectorAll(`[data-fx-word="${name}"]`).forEach((w) => w.classList.add('done')); }
+    }
   });
   current.keys = (e) => { if (e.key === 'ArrowRight') turn(1); if (e.key === 'ArrowLeft') turn(-1); };
 

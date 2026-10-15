@@ -1,8 +1,10 @@
 // The songs. Each one is a book; each page has a picture (a scene from art.js),
 // the lyric lines, and its part: 'verse' or 'chorus' (the music changes chords to match).
+// [word](name) makes a magic word: tapping it sets off the picture's parts called name
+// (see reveal() and play() in art.js) with a sound effect (FX_SOUNDS in app.js).
 // To add a song, add another entry to SONGS.
 
-const CHORUS = ["That's what I do", "They can't stop us", 'Not a chance', 'We were born for this'];
+const CHORUS = ["[That's what I do](pump)", "They [can't stop us](confetti)", '[Not a chance](shake)', 'We were [born for this](stars)'];
 
 const SONGS = [
   {
@@ -12,14 +14,14 @@ const SONGS = [
     cover: 'cover',
     boats: true,          // the cover asks what colour the boat should be
     pages: [
-      { scene: 'blender', part: 'verse', lines: ["This weekend Walter's gonna go on a cruise", "Of course he's gonna bring his blender on the cruise.", 'Oh yeah'] },
-      { scene: 'salad', part: 'verse', lines: ["Walter's sister loves salad and salad dressing", "So he's going to give her the recipe for salad.", "That's right"] },
+      { scene: 'blender', part: 'verse', lines: ["This weekend Walter's gonna go on a [cruise](horn)", "Of course he's gonna bring his [blender](blend) on the cruise.", '[Oh yeah!](yeah)'] },
+      { scene: 'salad', part: 'verse', lines: ["Walter's sister [loves salad](love) and salad dressing", "So he's going to give her the [recipe](recipe) for salad.", "[That's right!](right)"] },
       { scene: 'chorus', part: 'chorus', lines: CHORUS },
-      { scene: 'motor', part: 'verse', lines: ['While Walter was cruising, he saw the water', 'The captain revved the motor and he was like', 'WHAT!?'] },
-      { scene: 'marines', part: 'verse', lines: ['It was a little bit scary but I dealt with it well', 'The Marines helped me onto the boat,', 'I said 1, 2, 3'] },
+      { scene: 'motor', part: 'verse', lines: ['While Walter was cruising, he saw the [water](splash)', 'The captain revved the [motor](zoom) and he was like', '[WHAT!?](bubble)'] },
+      { scene: 'marines', part: 'verse', lines: ['It was a little bit [scary](scary) but I dealt with it well', 'The [Marines](marines) helped me onto the boat,', 'I said [1](n1), [2](n2), [3](n3)!'] },
       { scene: 'chorus', part: 'chorus', lines: CHORUS },
-      { scene: 'sing', part: 'verse', lines: ['We sang Boyz II Men on the cruise', "That's what I did"] },
-      { scene: 'drive', part: 'verse', lines: ['My sister Tish was driving the boat', 'and then my sister Mariana', 'And then ME!'] },
+      { scene: 'sing', part: 'verse', lines: ['We sang [Boyz II Men](lights) on the cruise', "That's what [I did](mic)"] },
+      { scene: 'drive', part: 'verse', lines: ['My sister [Tish](tish) was driving the boat', 'and then my sister [Mariana](mariana)', 'And then [ME!](me)'] },
       { scene: 'chorus', part: 'chorus', lines: CHORUS },
       { scene: 'finale', part: 'chorus', lines: CHORUS, note: 'Sing it twice!', end: true },
     ],

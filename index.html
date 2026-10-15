@@ -46,7 +46,7 @@ applyTheme(savedTheme());
         <button type="button" data-bpm="80">Slower</button><button type="button" data-bpm="92">Normal</button><button type="button" data-bpm="104">Faster</button>
       </div></div>
     <div class="set-row sync-row"><div><b>Sync Song Builder songs</b>
-      <p class="cap">Keeps songs made in the Song Builder the same on every device, saved in your private GitHub project.</p>
+      <p class="cap">Keeps songs made in the Song Builder the same on every device, saved in your GitHub project.</p>
       <div id="sync-on" hidden>
         <p class="sync-status" id="sync-status" aria-live="polite"></p>
         <div class="sync-btns"><button type="button" class="btn primary" id="sync-now">Sync now</button><button type="button" class="btn" id="sync-off-btn">Turn off on this device</button></div>
@@ -163,7 +163,7 @@ $('set-update').addEventListener('click', async () => {
 <script>
 // Offline support + updates. See sw.js.
 // The version shown in Settings. tools/bump.sh keeps this in step with VERSION in sw.js.
-window.APP_VERSION = 'v2';
+window.APP_VERSION = 'v3';
 (async () => {
   if (!('serviceWorker' in navigator)) return;
   // The test copy on the Mac (Start Jam Session.command) always loads fresh files.
