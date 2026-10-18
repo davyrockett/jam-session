@@ -2,7 +2,7 @@
 
 Music activities for sessions, built for the iPad.
 
-**Open it:** https://davyrockett.github.io/jam-session/
+**Open it:** https://www.davyrockett.com/jam-session/
 On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then works like an app, even without wifi.
 
 ## What's in it

@@ -51,7 +51,7 @@ with this section (copy it from any other app) plus an "## This app" section.
 
 **Jam Session**: music activities David uses in sessions with clients who have developmental delays
 (mostly David on an iPad; very occasionally a caregiver at home). Repo `jam-session`.
-Live: https://davyrockett.github.io/jam-session/ See README.md for features.
+Live: https://www.davyrockett.com/jam-session/ See README.md for features.
 
 - **Privacy:** one shared app, no client profiles. Songs use **first names only** (David's choice; the repo is
   public). Hello/Goodbye ask for a name each time and never save it.
