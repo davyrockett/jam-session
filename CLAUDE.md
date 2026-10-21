@@ -102,7 +102,8 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
 - **Halloween world** (added 2026-10-21; keep it friendly, never scary): every third hit opens the house's
   door (`door: true`, `knock()` / `openDoor()` in react.js) and a surprise from `surprises` jumps out; dots on
   the door count the knocks. The house is centred so tall (portrait) screens still show it. Halloween
-  things are in objects.js with topic `halloween`, not yet in Song Builder `TOPICS`.
+  things are in objects.js with topic `halloween`. Song Builder has a Halloween topic too (`PLACES.halloween`
+  with its own last line, actions boo / fly / knock; `thingX` puts the thing beside the house).
 - **Hello song lyrics are a placeholder** until David sends them (`ROUTINES` in songs.js).
 - **Test locally:** `Start Jam Session.command`, or `python3 -m http.server 8773` here and open
   http://localhost:8773/. Offline caching is switched off on localhost so tests always load fresh files.

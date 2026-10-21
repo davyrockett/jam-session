@@ -24,6 +24,9 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
 - **Song Builder** – the client picks pictures: what we saw, its colour, what it did, how it felt. The app
   writes a 4-page story song. Change any words, then **Save to Songbook**. Saved songs have an **Edit** button
   (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
+  Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween** (a pumpkin, ghost, bat, spider, cat or
+  candy at the haunted house, which can say BOO, fly to the moon, knock on the door or dance; the song ends
+  "Happy Halloween!").
 - **Hello / Goodbye** – the session songs as picture books. Type the client's first name on the first page and
   it appears in the words. Names are never saved.
 - **Choice Board** – pick 2 to 4 activities, tap **Show choices**, and the client picks what's next.

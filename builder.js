@@ -7,6 +7,7 @@ const PLACES = {
   animals: { world: 'animals', place: 'the farm' },
   vehicles: { world: 'vehicles', place: 'the city' },
   food: { world: 'party', place: 'a party' },
+  halloween: { world: 'halloween', place: 'the haunted house', end: 'Happy Halloween!' },
 };
 
 const COLOURS = [
@@ -24,6 +25,15 @@ const ACTIONS = {
       [[50, 30, 10], [24, 44, 7], [76, 44, 7], [38, 14, 5], [64, 14, 5]].map(([x, y, r]) => `<path d="M${x} ${y - r * 1.8} Q ${x + r} ${y} ${x} ${y + r} Q ${x - r} ${y} ${x} ${y - r * 1.8} Z" fill="#5DADE2" stroke="#2C3E50" stroke-width="3"/>`).join('') },
   dance: { line: (t) => `The ${t} danced all around,`, shout: 'DANCE, DANCE, DANCE!', move: 'wiggle',
     icon: `<g fill="#9B59B6"><ellipse cx="26" cy="74" rx="12" ry="9" transform="rotate(-20 26 74)"/><rect x="34" y="20" width="6" height="54"/><ellipse cx="66" cy="64" rx="12" ry="9" transform="rotate(-20 66 64)"/><rect x="74" y="10" width="6" height="54"/><path d="M34 20 L80 10 L80 22 L34 32 Z"/></g>` },
+  boo: { line: (t) => `The ${t} jumped out and said,`, shout: 'BOO, BOO, BOO!', move: 'bounce',
+    icon: `<path d="M10 20 Q 10 8 22 8 H78 Q 90 8 90 20 V56 Q 90 68 78 68 H44 L26 88 L30 68 H22 Q 10 68 10 56 Z" fill="#fff" stroke="#2C3E50" stroke-width="4" stroke-linejoin="round"/>` +
+      `<text x="50" y="50" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="30" fill="#2C3E50">BOO!</text>` },
+  fly: { line: (t) => `The ${t} flew up to the moon,`, shout: 'WHOOSH, WHOOSH, WHOOSH!', move: 'float',
+    icon: `<circle cx="72" cy="28" r="20" fill="#FFF3B0" stroke="#2C3E50" stroke-width="4"/><path d="M8 92 Q 14 46 52 44" stroke="#2C3E50" stroke-width="6" fill="none" stroke-dasharray="10 9" stroke-linecap="round"/>` +
+      `<path d="M42 34 L54 44 L42 56" stroke="#2C3E50" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` },
+  knock: { line: (t) => `The ${t} knocked on the door,`, shout: 'KNOCK, KNOCK, KNOCK!', move: 'knockit',
+    icon: `<path d="M24 94 V32 Q 24 10 46 10 Q 68 10 68 32 V94 Z" fill="#8E5A3C" stroke="#2C3E50" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="56" r="4" fill="#F1C40F"/>` +
+      `<path d="M78 36 Q 86 46 78 56 M88 28 Q 100 46 88 64" stroke="#2C3E50" stroke-width="5" fill="none" stroke-linecap="round"/>` },
   sleep: { line: (t) => `The ${t} went to sleep,`, shout: 'SHH, SHH, SHH!', move: '',
     icon: `<circle cx="38" cy="58" r="30" fill="#F7F3D0" stroke="#2C3E50" stroke-width="4"/><circle cx="54" cy="48" r="26" fill="#fff"/>` +
       `<text x="70" y="38" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="30" fill="#2C3E50">Z</text><text x="84" y="18" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="22" fill="#2C3E50">z</text>` },
@@ -33,6 +43,7 @@ const ACTIONS_FOR = {
   animals: ['jump', 'dance', 'sleep', 'splash'],
   vehicles: ['zoom', 'jump', 'dance', 'sleep'],
   food: ['dance', 'jump', 'zoom', 'sleep'],
+  halloween: ['boo', 'fly', 'knock', 'dance'],
 };
 
 const FEELINGS = {
@@ -50,7 +61,7 @@ function builtScene(spec) {
   let mid = '';
   if (spec.thing) {
     const dance = spec.move ? ` class="${spec.move}"` : '';
-    mid += `<g${dance}><g transform="translate(130 ${w.ground - 168}) scale(1.4)">${objDraw(spec.thing, spec.tint)}</g></g>`;
+    mid += `<g${dance}><g transform="translate(${w.thingX ?? 130} ${w.ground - 168}) scale(1.4)">${objDraw(spec.thing, spec.tint)}</g></g>`;
   }
   if (spec.action) mid += `<g transform="translate(286 ${Math.max(30, w.ground - 210)}) scale(.9)"><circle cx="50" cy="50" r="56" fill="#fff" opacity=".85"/>${ACTIONS[spec.action].icon}</g>`;
   if (spec.feeling) mid += `<g class="bounce"><g transform="translate(290 34) scale(.9)"><circle cx="50" cy="50" r="46" fill="#FFD34D" stroke="#2C3E50" stroke-width="4"/>${FEELINGS[spec.feeling]}</g></g>`;
@@ -60,6 +71,7 @@ function builtScene(spec) {
 
 function writeSong(d) {
   const thing = OBJECTS[d.thing].word, colour = d.colour[0], tint = d.colour[1];
+  const an = /^[aeiou]/.test(colour) ? 'an' : 'a';
   const a = ACTIONS[d.action], art = (extra) => ({ world: PLACES[d.topic].world, thing: d.thing, tint, ...extra });
   return {
     title: `The ${colour[0].toUpperCase() + colour.slice(1)} ${thing.replace(/\b\w/g, (c) => c.toUpperCase())}`,
@@ -67,9 +79,9 @@ function writeSong(d) {
     cover: art({}),
     pages: [
       { scene: { world: PLACES[d.topic].world, question: true }, part: 'verse', lines: [`Today we went to ${PLACES[d.topic].place},`, 'and guess what we saw?'] },
-      { scene: art({}), part: 'verse', lines: [`We saw a ${colour} ${thing},`, `a great big ${colour} ${thing}!`] },
+      { scene: art({}), part: 'verse', lines: [`We saw ${an} ${colour} ${thing},`, `a great big ${colour} ${thing}!`] },
       { scene: art({ move: a.move, action: d.action }), part: 'verse', lines: [a.line(thing), a.shout] },
-      { scene: art({ feeling: d.feeling }), part: 'verse', lines: [`That made me feel so ${d.feeling},`, 'what a day!'], end: true },
+      { scene: art({ feeling: d.feeling }), part: 'verse', lines: [`That made me feel so ${d.feeling},`, PLACES[d.topic].end || 'what a day!'], end: true },
     ],
   };
 }

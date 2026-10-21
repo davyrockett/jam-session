@@ -1,7 +1,6 @@
 // The picture library: single things drawn in a 100 × 100 box.
 // Used by Cause & Effect (they pop up when you play) and the Song Builder (picture choices).
 // Each one has a topic, a word for the song builder, and a written sound for Cause & Effect.
-// Halloween things aren't in TOPICS (not offered in the Song Builder yet).
 
 const OBJ_INK = '#2C3E50';
 const o = (d, fill, extra = '') => `<path d="${d}" fill="${fill}" stroke="${OBJ_INK}" stroke-width="2.5" stroke-linejoin="round" ${extra}/>`;
@@ -194,7 +193,7 @@ const OBJECTS = {
     o('M50 52 Q 65 52 65 67 Q 65 82 50 82 Q 35 82 35 67 Q 35 52 50 52 Z', '#A796E6') +
     eye(44, 64, 5) + eye(56, 64, 5) +
     `<path d="M44 73 Q 50 78 56 73" stroke="${OBJ_INK}" stroke-width="2" fill="none" stroke-linecap="round"/>` },
-  blackcat: { main: '#58516F', topic: 'halloween', word: 'black cat', sound: 'MEOW!', draw: () =>
+  blackcat: { main: '#58516F', topic: 'halloween', word: 'cat', sound: 'MEOW!', draw: () =>
     `<path d="M72 80 Q 96 78 92 54 Q 90 44 82 46" stroke="#58516F" stroke-width="7" fill="none" stroke-linecap="round"/>` +
     o('M28 88 Q 22 56 50 54 Q 78 56 72 88 Z', '#58516F') +
     o('M24 22 L30 6 L42 18 Z', '#58516F') + o('M76 22 L70 6 L58 18 Z', '#58516F') +
@@ -245,6 +244,7 @@ const TOPICS = {
   animals: { name: 'Animals' },
   vehicles: { name: 'Vehicles' },
   food: { name: 'Food & parties' },
+  halloween: { name: 'Halloween' },
 };
 
 // The drawing, optionally recoloured: the thing's main colour is swapped for tint.

@@ -87,6 +87,7 @@ const WORLDS = {
     things: ['pumpkin', 'ghost', 'bat', 'spider', 'blackcat', 'candy'],
     move: { ghost: 'float', bat: 'fly', spider: 'dangle', candy: 'popin' }, normal: 'pop', ground: 258,
     door: true, surprises: ['monster', 'bucket', 'furball'],
+    thingX: 14,   // Song Builder pictures: the chosen thing stands beside the house, not in front of it
   },
 };
 
