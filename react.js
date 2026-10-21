@@ -48,6 +48,46 @@ const WORLDS = {
     things: ['fireworks', 'cake', 'balloon', 'fireworks', 'pizza', 'icecream', 'fireworks', 'balloon', 'burger', 'apple'],
     move: { balloon: 'rise', fireworks: 'burst' }, normal: 'popin', ground: 250,
   },
+  // Friendly Halloween night (the house is in the middle so tall screens still show it). Every third hit is a knock that opens the house's door
+  // and a surprise jumps out (door: true, surprises). The dots on the door count the knocks.
+  halloween: {
+    name: 'Halloween',
+    back: (t) => {
+      const mini = (x, y) => `<ellipse cx="${x}" cy="${y}" rx="11" ry="8" fill="#F57C14" stroke="${INK}" stroke-width="2"/>
+        <path d="M${x - 1} ${y - 7} L${x} ${y - 12} L${x + 3} ${y - 11} L${x + 2} ${y - 7} Z" fill="#4E8C3A"/>
+        <path d="M${x - 6} ${y - 1} l2 -3 l2 3 Z M${x + 2} ${y - 1} l2 -3 l2 3 Z M${x - 5} ${y + 2} Q ${x} ${y + 6} ${x + 5} ${y + 2} Z" fill="#FFD34D"/>`;
+      const win = (x) => `<rect x="${x}" y="164" width="28" height="26" fill="#FFD34D" stroke="${INK}" stroke-width="2.5"/>
+        <path d="M${x + 14} 164 V190 M${x} 177 H${x + 28}" stroke="${INK}" stroke-width="2"/>`;
+      const arch = 'M253 238 L253 200 Q 253 184 270 184 Q 287 184 287 200 L287 238 Z';
+      return `<rect width="400" height="300" fill="#3A2D6B"/>
+        ${star(150, t + 40, 3, '#fff')}${star(232, t + 26, 4, '#fff')}${star(330, t + 48, 3, '#fff')}${star(372, t + 18, 3, '#fff')}${star(46, t + 128, 3, '#fff')}${star(190, t + 82, 2.5, '#fff')}
+        <circle cx="100" cy="${t + 60}" r="32" fill="#FFF3B0"/><circle cx="89" cy="${t + 50}" r="7" fill="#F2E39A"/><circle cx="113" cy="${t + 72}" r="8" fill="#F2E39A"/><circle cx="110" cy="${t + 46}" r="4" fill="#F2E39A"/>
+        <path d="M-20 238 Q 70 196 160 228 Q 260 186 420 226 L420 300 L-20 300 Z" fill="#2A2052"/>
+        <rect x="0" y="234" width="400" height="66" fill="#3F6B50"/>
+        <g transform="translate(-70 0)">
+        <path d="M300 140 L301 116 L315 114 L315 150 Z" fill="#5B4A86" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M210 152 L330 152 L332 238 L208 238 Z" fill="#7A68A6" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M198 156 L270 114 L342 156 Z" fill="#3C2F66" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="270" cy="139" r="7.5" fill="#FFD34D" stroke="${INK}" stroke-width="2.5"/>
+        ${win(220)}${win(292)}
+        <path d="${arch}" fill="#FFE7A3" stroke="${INK}" stroke-width="2.5"/>
+        <g class="door"><path d="${arch}" fill="#8E5A3C" stroke="${INK}" stroke-width="2.5"/>
+          <path d="M264 186 V238 M276 186 V238" stroke="#6E4329" stroke-width="2"/>
+          <circle class="kdot" cx="261" cy="204" r="3.5" fill="#5E3A26"/><circle class="kdot" cx="270" cy="204" r="3.5" fill="#5E3A26"/><circle class="kdot" cx="279" cy="204" r="3.5" fill="#5E3A26"/>
+          <circle cx="281" cy="218" r="2.5" fill="#F1C40F"/></g>
+        <rect x="246" y="236" width="48" height="6" fill="#5B4E80" stroke="${INK}" stroke-width="2"/>
+        ${mini(228, 230)}${mini(314, 230)}</g>`;
+    },
+    front: () => {
+      let posts = '';
+      for (let x = 8; x < 400; x += 24) posts += `<path d="M${x} 300 L${x} 256 L${x + 3} 248 L${x + 6} 256 L${x + 6} 300 Z" fill="#1E1838"/>`;
+      return `<rect x="0" y="262" width="400" height="5" fill="#1E1838"/><rect x="0" y="284" width="400" height="5" fill="#1E1838"/>${posts}
+        <rect x="0" y="292" width="400" height="8" fill="#2F5540"/>`;
+    },
+    things: ['pumpkin', 'ghost', 'bat', 'spider', 'blackcat', 'candy'],
+    move: { ghost: 'float', bat: 'fly', spider: 'dangle', candy: 'popin' }, normal: 'pop', ground: 258,
+    door: true, surprises: ['monster', 'bucket', 'furball'],
+  },
 };
 
 // ---------- Listening to the microphone ----------
@@ -103,7 +143,7 @@ const Listener = (() => {
 function reactScreen(worldId) {
   if (!WORLDS[worldId]) worldId = store.get('world', 'ocean');
   let world = WORLDS[worldId];
-  let hits = 0, turn = 0;
+  let hits = 0, turn = 0, knocks = 0, surprise = 0, closeTimer;
 
   show(`<div class="screen react">
     <div class="topbar">${homeBtn()}<div class="title"><h2>Cause &amp; Effect</h2><p id="hits">Play a hit or tap the picture.</p></div>${settingsBtn}</div>
@@ -137,17 +177,20 @@ function reactScreen(worldId) {
   document.querySelector('.worlds').addEventListener('click', (e) => {
     const b = e.target.closest('[data-world]');
     if (!b) return;
-    worldId = b.dataset.world; world = WORLDS[worldId]; turn = 0;
+    worldId = b.dataset.world; world = WORLDS[worldId]; turn = 0; knocks = 0;
     store.set('world', worldId);
     document.querySelectorAll('[data-world]').forEach((x) => x.setAttribute('aria-pressed', x === b));
     drawWorld();
-  let resizeTimer;
-  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (document.body.contains(stage)) drawWorld(); }, 200); });
   });
 
   function trigger(power) {
     hits++;
     $('hits').textContent = `${hits} ${hits === 1 ? 'hit' : 'hits'}`;
+    if (world.door) {
+      knocks++;
+      if (knocks % 3 === 0) return openDoor(power);
+      knock();
+    }
     const name = world.things[turn++ % world.things.length];
     const how = world.move[name] || world.normal;
     const W = stage.clientWidth, H = stage.clientHeight;
@@ -188,6 +231,19 @@ function reactScreen(worldId) {
       frames = [{ transform: at(-size, y + 20) }, { transform: at(W / 2, y - 10) }, { transform: at(W, y + 20) }];
       ms = 2600;
       word(sound, W / 2 + size / 2, y - 6);
+    } else if (how === 'float') {
+      const y0 = groundY - size;
+      frames = [{ transform: at(x, y0 + size * 0.3), opacity: 0 }, { transform: at(x + size * 0.2, y0 - size * 0.3), opacity: 1, offset: 0.2 },
+        { transform: at(x - size * 0.2, y0 - size * 0.9), opacity: 1, offset: 0.6 }, { transform: at(x + size * 0.2, y0 - size * 1.6), opacity: 0 }];
+      ms = 2800; opts.easing = 'ease-in-out';
+      word(sound, x + size / 2, y0 - size * 0.45);
+    } else if (how === 'dangle') {
+      el.insertAdjacentHTML('afterbegin', '<div class="thread"></div>');
+      const y = H * (0.18 + Math.random() * 0.2);
+      frames = [{ transform: at(x, -size * 1.2) }, { transform: at(x, y + size * 0.18), offset: 0.3 }, { transform: at(x, y - size * 0.05), offset: 0.42 },
+        { transform: at(x, y), offset: 0.52 }, { transform: at(x, y), offset: 0.78 }, { transform: at(x, -size * 1.2) }];
+      ms = 2800;
+      word(sound, x + size * 1.5, y + size * 0.5);
     } else if (how === 'rise') {
       frames = [{ transform: at(x, H) }, { transform: at(x + 30, H * 0.5) }, { transform: at(x - 20, -size) }];
       ms = 3000;
@@ -200,6 +256,45 @@ function reactScreen(worldId) {
       word(sound, x + size / 2, y - 8);
     }
     el.animate(frames, { duration: ms, fill: 'forwards', ...opts }).onfinish = () => el.remove();
+  }
+
+  // Halloween: a knock wiggles the door and lights one more dot on it.
+  function knock() {
+    const door = $('back').querySelector('.door');
+    if (!door || door.classList.contains('open')) return;
+    door.querySelectorAll('.kdot').forEach((d, i) => d.classList.toggle('on', i < knocks % 3));
+    door.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(-2.5deg)' }, { transform: 'rotate(2.5deg)' }, { transform: 'rotate(0deg)' }], { duration: 320 });
+  }
+
+  // Every third knock the door opens and a surprise jumps out, then goes back in.
+  function openDoor(power) {
+    const door = $('back').querySelector('.door');
+    if (!door) return;
+    door.querySelectorAll('.kdot').forEach((d) => d.classList.add('on'));
+    door.classList.add('open');
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => {
+      door.classList.remove('open');
+      door.querySelectorAll('.kdot').forEach((d) => d.classList.remove('on'));
+    }, 3000);
+
+    const W = stage.clientWidth, H = stage.clientHeight;
+    const k = Math.max(W / 400, H / 300), ox = (W - 400 * k) / 2;
+    const dx = ox + 200 * k, dy = H - (300 - 212) * k;     // the middle of the doorway on screen
+    const size = Math.min(W, H * 1.33) * (0.36 + 0.1 * power);
+    const cx = Math.max(size * 0.55, Math.min(W * 0.45, dx - size * 0.65)), cy = Math.max(size * 0.55 + 50, H * 0.45);
+    const name = world.surprises[surprise++ % world.surprises.length];
+    const el = document.createElement('div');
+    el.className = 'thing';
+    el.style.width = el.style.height = `${size}px`;
+    el.innerHTML = objSvg(name);
+    fx.appendChild(el);
+    const at = (px, py, s) => `translate(${px - size / 2}px, ${py - size / 2}px) scale(${s})`;
+    el.animate([{ transform: at(dx, dy, 0.1), opacity: 0 }, { transform: at(dx, dy, 0.18), opacity: 1, offset: 0.1 },
+      { transform: at(cx, cy, 1.1), offset: 0.3 }, { transform: at(cx, cy, 1), offset: 0.38 },
+      { transform: at(cx, cy, 1), opacity: 1, offset: 0.82 }, { transform: at(dx, dy, 0.1), opacity: 0 }],
+    { duration: 3200, easing: 'ease-out', fill: 'forwards' }).onfinish = () => el.remove();
+    setTimeout(() => word(OBJECTS[name].sound, cx, cy - size * 0.6), 500);
   }
 
   function word(text, cx, cy) {

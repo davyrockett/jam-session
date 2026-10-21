@@ -1,6 +1,7 @@
 // The picture library: single things drawn in a 100 × 100 box.
 // Used by Cause & Effect (they pop up when you play) and the Song Builder (picture choices).
 // Each one has a topic, a word for the song builder, and a written sound for Cause & Effect.
+// Halloween things aren't in TOPICS (not offered in the Song Builder yet).
 
 const OBJ_INK = '#2C3E50';
 const o = (d, fill, extra = '') => `<path d="${d}" fill="${fill}" stroke="${OBJ_INK}" stroke-width="2.5" stroke-linejoin="round" ${extra}/>`;
@@ -161,6 +162,82 @@ const OBJECTS = {
     o('M50 72 Q 18 62 20 34 Q 22 6 50 6 Q 78 6 80 34 Q 82 62 50 72 Z', '#E84393') +
     o('M46 72 L54 72 L52 78 L48 78 Z', '#E84393') +
     `<path d="M34 24 Q 36 16 44 14" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>` },
+
+  // ----- Halloween (friendly, never scary) -----
+  pumpkin: { main: '#F57C14', topic: 'halloween', word: 'pumpkin', sound: 'HEE HEE!', draw: () =>
+    o('M46 24 Q 46 12 54 6 L59 10 Q 53 15 54 24 Z', '#4E8C3A') +
+    o('M50 24 Q 84 16 91 52 Q 93 88 50 89 Q 7 88 9 52 Q 16 16 50 24 Z', '#F57C14') +
+    `<path d="M36 24 Q 22 56 36 87 M64 24 Q 78 56 64 87" stroke="#C85A0C" stroke-width="2.5" fill="none"/>` +
+    o('M27 50 L35 36 L43 50 Z', '#FFD34D') + o('M57 50 L65 36 L73 50 Z', '#FFD34D') + o('M46 59 L50 53 L54 59 Z', '#FFD34D') +
+    o('M24 63 Q 50 88 76 63 Q 68 68 62 66 L58 72 L54 67 L46 67 L42 72 L38 66 Q 32 68 24 63 Z', '#FFD34D') },
+  ghost: { main: '#FDFDFD', topic: 'halloween', word: 'ghost', sound: 'BOO!', draw: () =>
+    o('M24 54 Q 8 54 6 40 Q 15 45 24 44 Z', '#FDFDFD') + o('M76 54 Q 92 54 94 40 Q 85 45 76 44 Z', '#FDFDFD') +
+    o('M22 90 L22 44 Q 22 8 50 8 Q 78 8 78 44 L78 90 Q 71 82 64 90 Q 57 82 50 90 Q 43 82 36 90 Q 29 82 22 90 Z', '#FDFDFD') +
+    dot(40, 40, 5) + dot(60, 40, 5) + dot(41.5, 38.5, 1.6, '#fff') + dot(61.5, 38.5, 1.6, '#fff') +
+    `<circle cx="32" cy="50" r="4" fill="#F8B9D4"/><circle cx="68" cy="50" r="4" fill="#F8B9D4"/>` +
+    o('M42 53 Q 50 68 58 53 Z', OBJ_INK) + `<path d="M46 60 Q 50 66 54 60 Q 50 57 46 60 Z" fill="#E84393"/>` },
+  // The wings sit in .flapL / .flapR so Cause & Effect can flap them (styles.css).
+  bat: { main: '#8B5A44', topic: 'halloween', word: 'bat', sound: 'FLAP FLAP!', draw: () =>
+    `<g class="flapL">${o('M40 46 Q 24 28 3 34 Q 10 43 7 54 Q 16 50 20 59 Q 26 52 32 61 Q 36 54 41 56 Z', '#6B4535')}</g>` +
+    `<g class="flapR">${o('M60 46 Q 76 28 97 34 Q 90 43 93 54 Q 84 50 80 59 Q 74 52 68 61 Q 64 54 59 56 Z', '#6B4535')}</g>` +
+    o('M40 40 L38 22 L48 33 Z', '#8B5A44') + o('M60 40 L62 22 L52 33 Z', '#8B5A44') +
+    o('M37 50 Q 37 32 50 32 Q 63 32 63 50 Q 63 72 50 74 Q 37 72 37 50 Z', '#8B5A44') +
+    eye(45, 45, 4) + eye(55, 45, 4) +
+    `<path d="M45 52 Q 50 56 55 52" stroke="${OBJ_INK}" stroke-width="2" fill="none" stroke-linecap="round"/>` +
+    `<path d="M47 53.5 L48 57 L49.5 54 M50.5 54 L52 57 L53 53.5" fill="#fff" stroke="${OBJ_INK}" stroke-width="1"/>` },
+  // Hangs from its thread: Cause & Effect adds the thread above it.
+  spider: { main: '#8E7CD6', topic: 'halloween', word: 'spider', sound: 'BOING!', draw: () =>
+    `<path d="M37 50 Q 20 36 11 48 M35 57 Q 15 52 7 66 M37 64 Q 20 70 14 85 M41 70 Q 31 82 29 95
+      M63 50 Q 80 36 89 48 M65 57 Q 85 52 93 66 M63 64 Q 80 70 86 85 M59 70 Q 69 82 71 95" stroke="#B9A8EE" stroke-width="4.5" fill="none" stroke-linecap="round"/>` +
+    o('M50 18 Q 72 18 72 40 Q 72 58 50 58 Q 28 58 28 40 Q 28 18 50 18 Z', '#8E7CD6') +
+    `<path d="M40 28 Q 44 24 50 24" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".6"/>` +
+    o('M50 52 Q 65 52 65 67 Q 65 82 50 82 Q 35 82 35 67 Q 35 52 50 52 Z', '#A796E6') +
+    eye(44, 64, 5) + eye(56, 64, 5) +
+    `<path d="M44 73 Q 50 78 56 73" stroke="${OBJ_INK}" stroke-width="2" fill="none" stroke-linecap="round"/>` },
+  blackcat: { main: '#58516F', topic: 'halloween', word: 'black cat', sound: 'MEOW!', draw: () =>
+    `<path d="M72 80 Q 96 78 92 54 Q 90 44 82 46" stroke="#58516F" stroke-width="7" fill="none" stroke-linecap="round"/>` +
+    o('M28 88 Q 22 56 50 54 Q 78 56 72 88 Z', '#58516F') +
+    o('M24 22 L30 6 L42 18 Z', '#58516F') + o('M76 22 L70 6 L58 18 Z', '#58516F') +
+    o('M28 18 L31 11 L36 17 Z', '#F8B9D4') + o('M72 18 L69 11 L64 17 Z', '#F8B9D4') +
+    o('M22 36 Q 22 16 50 16 Q 78 16 78 36 Q 78 58 50 58 Q 22 58 22 36 Z', '#58516F') +
+    `<ellipse cx="39" cy="35" rx="6" ry="6.5" fill="#C8E64A" stroke="${OBJ_INK}" stroke-width="1.8"/><ellipse cx="61" cy="35" rx="6" ry="6.5" fill="#C8E64A" stroke="${OBJ_INK}" stroke-width="1.8"/>` +
+    `<ellipse cx="39" cy="35" rx="1.8" ry="5" fill="${OBJ_INK}"/><ellipse cx="61" cy="35" rx="1.8" ry="5" fill="${OBJ_INK}"/>` +
+    o('M47 44 L53 44 L50 48 Z', '#F8B9D4') +
+    `<path d="M50 48 Q 46 53 42 50 M50 48 Q 54 53 58 50" stroke="${OBJ_INK}" stroke-width="1.8" fill="none"/>` +
+    `<path d="M30 44 H14 M30 48 L16 52 M70 44 H86 M70 48 L84 52" stroke="#D9D4EA" stroke-width="1.8" fill="none"/>` },
+  candy: { main: '#F57C14', topic: 'halloween', word: 'candy', sound: 'TREAT!', draw: () =>
+    o('M30 50 L8 34 Q 13 50 8 66 Z', '#8E44AD') + o('M70 50 L92 34 Q 87 50 92 66 Z', '#8E44AD') +
+    o('M28 50 Q 28 32 50 32 Q 72 32 72 50 Q 72 68 50 68 Q 28 68 28 50 Z', '#F57C14') +
+    `<path d="M39 35 Q 33 50 40 65 M51 33 Q 45 50 52 67 M63 36 Q 58 50 64 63" stroke="#FFD34D" stroke-width="5" fill="none" stroke-linecap="round"/>` },
+
+  // Surprises behind the Halloween house's door (Cause & Effect, every third hit).
+  monster: { main: '#5DBB63', topic: 'halloween', word: 'monster', sound: 'TRICK OR TREAT!', draw: () =>
+    o('M30 26 Q 22 10 30 3 Q 34 16 41 21 Z', '#F7D24A') + o('M70 26 Q 78 10 70 3 Q 66 16 59 21 Z', '#F7D24A') +
+    o('M22 58 Q 6 48 8 26 Q 14 22 17 29 Q 17 44 27 50 Z', '#5DBB63') + o('M78 58 Q 94 48 92 26 Q 86 22 83 29 Q 83 44 73 50 Z', '#5DBB63') +
+    o('M24 92 Q 15 60 22 40 Q 30 17 50 17 Q 70 17 78 40 Q 85 60 76 92 Z', '#5DBB63') +
+    o('M26 93 Q 26 84 36 84 Q 45 84 45 93 Z', '#3F8F45') + o('M55 93 Q 55 84 64 84 Q 74 84 74 93 Z', '#3F8F45') +
+    `<ellipse cx="50" cy="72" rx="15" ry="11" fill="#A6E3A1"/>` +
+    `<circle cx="50" cy="34" r="10" fill="#fff" stroke="${OBJ_INK}" stroke-width="2"/>${dot(51, 35, 4.5)}<circle cx="53" cy="32" r="1.6" fill="#fff"/>` +
+    o('M34 48 Q 50 64 66 48 Z', OBJ_INK) + o('M40 49.5 L43 55 L46 51 Z', '#fff') + o('M54 51 L57 55 L60 49.5 Z', '#fff') },
+  bucket: { main: '#F57C14', topic: 'halloween', word: 'candy bucket', sound: 'TRICK OR TREAT!', draw: () =>
+    `<path d="M19 46 Q 50 -4 81 46" stroke="${OBJ_INK}" stroke-width="3" fill="none"/>` +
+    o('M24 44 Q 22 30 34 32 Q 38 26 46 30 L44 46 Z', '#E84393') + o('M44 44 Q 46 26 58 30 Q 66 26 70 36 L66 46 Z', '#3498DB') +
+    o('M62 44 Q 62 32 72 34 Q 80 34 78 46 Z', '#F1C40F') + o('M32 30 L36 22 L40 30 Z', '#8E44AD') +
+    o('M16 42 L84 42 Q 88 90 50 91 Q 12 90 16 42 Z', '#F57C14') +
+    o('M16 42 L84 42 L84 48 L16 48 Z', '#E06A0A') +
+    o('M30 60 L37 52 L44 60 Z', OBJ_INK) + o('M56 60 L63 52 L70 60 Z', OBJ_INK) +
+    o('M30 68 Q 50 86 70 68 Q 62 72 57 71 L54 76 L50 72 L46 76 L43 71 Q 38 72 30 68 Z', OBJ_INK) },
+  furball: { main: '#9B59B6', topic: 'halloween', word: 'fuzzy monster', sound: 'TRICK OR TREAT!', draw: () => {
+    let fur = '';
+    for (let i = 0; i < 28; i++) {
+      const a = (i / 28) * Math.PI * 2, r = i % 2 ? 33 : 38;
+      fur += `${i ? 'L' : 'M'}${(50 + r * Math.cos(a)).toFixed(1)} ${(52 + r * Math.sin(a) * 0.95).toFixed(1)} `;
+    }
+    return o('M18 58 Q 4 50 6 32 Q 12 28 15 34 Q 15 46 24 52 Z', '#9B59B6') + o('M82 58 Q 96 50 94 32 Q 88 28 85 34 Q 85 46 76 52 Z', '#9B59B6') +
+      o('M30 86 Q 30 98 40 98 Q 46 98 46 88 Z', '#F57C14') + o('M70 86 Q 70 98 60 98 Q 54 98 54 88 Z', '#F57C14') +
+      o(`${fur}Z`, '#9B59B6') + eye(39, 42, 8) + eye(61, 42, 8) +
+      o('M34 58 Q 50 78 66 58 Z', OBJ_INK) + `<path d="M43 67 Q 50 75 57 67 Q 50 63 43 67 Z" fill="#E84393"/>`;
+  } },
 };
 
 const TOPICS = {

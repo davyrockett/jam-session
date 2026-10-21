@@ -166,6 +166,15 @@ dialog::backdrop { background: rgb(0 0 0 / .4); }
 .stage-front, .fx { pointer-events: none; }
 .thing { position: absolute; left: 0; top: 0; will-change: transform; }
 .thing svg { display: block; width: 100%; height: 100%; overflow: visible; }
+/* Halloween: the bat flaps, the spider hangs on a thread, the house's door opens on the third knock. */
+.thing .flapL, .thing .flapR { transform-box: fill-box; animation: flap .22s ease-in-out infinite alternate; }
+.thing .flapL { transform-origin: 100% 40%; }
+.thing .flapR { transform-origin: 0% 40%; }
+@keyframes flap { to { transform: scaleY(.4); } }
+.thing .thread { position: absolute; left: calc(50% - 1px); bottom: 78%; width: 2px; height: 200vh; background: #E8E4F5; }
+.stage .door { transform-box: fill-box; transform-origin: 0% 50%; transition: transform .35s ease; }
+.stage .door.open { transform: scaleX(.1); }
+.stage .kdot.on { fill: #FFD34D; }
 .word { position: absolute; font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 5vw, 60px); line-height: 1; white-space: nowrap;
   color: #fff; -webkit-text-stroke: 2px #2C3E50; paint-order: stroke fill; text-shadow: 0 3px 0 #2C3E50; }
 .listen { display: flex; align-items: center; gap: 16px; margin-top: 14px; }

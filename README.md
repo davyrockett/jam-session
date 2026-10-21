@@ -18,6 +18,9 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   pop up over the fence, cars drive by, fireworks go off. Tap **Listen** to use the microphone; tapping the
   picture works too. If it reacts to talking (or your guitar), lower the **Sensitivity**. The orange bar shows
   what the iPad hears; the black line is how loud a hit needs to be.
+  **Halloween**: pumpkins, a ghost, a bat, a spider, a black cat and candy, and every third hit is a knock on
+  the house's door (the dots on the door count 1, 2, 3). On three the door opens and a friendly monster or a
+  candy bucket jumps out: "Trick or treat!"
 - **Song Builder** – the client picks pictures: what we saw, its colour, what it did, how it felt. The app
   writes a 4-page story song. Change any words, then **Save to Songbook**. Saved songs have an **Edit** button
   (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
