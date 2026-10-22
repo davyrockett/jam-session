@@ -71,11 +71,11 @@ function menuScreen() {
   show(`<div class="screen">
     <div class="topbar"><div class="title"><h1>Jam Session</h1><p>Music activities for sessions.</p></div>${settingsBtn}</div>
     <div class="tiles menu">${ACTIVITIES.map((a) => `
-      <button type="button" class="tile" data-go="#/${a.id}" ${a.ready ? '' : 'disabled'}>
+      <a class="tile" ${a.ready ? `href="#/${a.id}"` : 'aria-disabled="true"'}>
         <div class="thumb">${a.thumb()}</div>
         ${a.ready ? '' : '<span class="soon">Coming soon</span>'}
         <div class="label"><h3>${a.name}</h3><p>${a.about}</p></div>
-      </button>`).join('')}
+      </a>`).join('')}
     </div></div>`);
 }
 
@@ -85,10 +85,10 @@ function shelfScreen() {
   show(`<div class="screen">
     <div class="topbar">${homeBtn()}<div class="title"><h2>Songbook</h2></div>${settingsBtn}</div>
     <div class="tiles">${allSongs().map((s) => `
-      <button type="button" class="tile" data-go="#/song/${s.id}/0">
+      <a class="tile" href="#/song/${s.id}/0">
         <div class="thumb">${scene(s.cover)}</div>
         <div class="label"><h3>${esc(s.title)}</h3><p>By ${esc(s.by)}</p></div>
-      </button>`).join('')}
+      </a>`).join('')}
     </div></div>`);
 }
 
