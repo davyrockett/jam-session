@@ -45,11 +45,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .tile p { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
 .tile:disabled { cursor: default; }
 .tile:disabled .thumb, .tile:disabled h3 { opacity: .4; }
-/* The activity menu: shorter tiles (David) so all six fit on the iPad with less scrolling. */
-.tiles.menu .thumb { aspect-ratio: 2 / 1; overflow: hidden; }
-.tiles.menu .thumb svg { position: absolute; inset: 0; }   /* the picture fills and is cropped, instead of setting the height */
-.tiles.menu .label { padding: 8px 14px 10px; }
-.tiles.menu h3 { font-size: 1.4rem; }
+/* The activity menu: full pictures, but no empty space under the words (David). Each description fits on one line. */
+.tiles.menu .label { padding: 10px 16px 12px; }
+.tiles.menu .label p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .soon { position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: .8rem; font-weight: 700; }
 .section-title { font-size: 1.3rem; color: var(--muted); margin: 24px 0 10px; }
 

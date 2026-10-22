@@ -46,7 +46,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 // ---------- Screens ----------
 
 const ACTIVITIES = [
-  { id: 'songs', name: 'Songbook', about: 'Picture books of the songs we wrote.', thumb: () => scene('cover'), ready: true },
+  { id: 'songs', name: 'Songbook', about: 'Picture books of our songs.', thumb: () => scene('cover'), ready: true },
   { id: 'react', name: 'Cause & Effect', about: 'Play a hit, something happens.', thumb: () => THUMBS.react(), ready: true },
   { id: 'builder', name: 'Song Builder', about: 'Pick pictures, make a new song.', thumb: () => THUMBS.builder(), ready: true },
   { id: 'hello', name: 'Hello', about: 'The hello song.', thumb: () => scene('helloSun'), ready: true },
