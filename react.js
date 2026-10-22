@@ -93,48 +93,68 @@ const WORLDS = {
 
 // ---------- Listening to the microphone ----------
 
+// iPad notes: the audio is started inside the tap (before waiting for the mic), or Safari can leave it
+// silent. The mic is asked for once per visit and kept (switched off, not closed, while not listening),
+// because a home-screen app asks again every time the mic is opened and can get stuck saying no.
 const Listener = (() => {
-  let stream, ctx, analyser, buf, raf, floor = 0.01, last = 0, prev = 0, ignoreUntil = 0;
-  let onHit = () => {}, onLevel = () => {};
-  let threshold = 0.05;
+  let stream, ctx, analyser, buf, raf, floor = 0.003, last = 0, lastLevel = 0, ignoreUntil = 0, listening = false;
+  let recent = [];   // levels over the last ~150 ms, so a hit is a jump above the quietest of them
+  let onHit = () => {}, onLevel = () => {}, onEnd = () => {};
+  let threshold = 0.02;
 
   function loop() {
     analyser.getFloatTimeDomainData(buf);
     let sum = 0;
     for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
     const rms = Math.sqrt(sum / buf.length);
-    if (rms < floor * 3) floor = floor * 0.99 + rms * 0.01;  // slowly learn the room's background noise
+    if (rms < floor * 3) floor = floor * 0.98 + rms * 0.02;  // slowly learn the room's background noise
+    const base = recent.length ? Math.min(...recent) : rms;
     const now = performance.now();
-    if (rms > threshold && rms > floor * 2.5 && rms > prev * 1.25 && now - last > 180 && now > ignoreUntil) {
-      last = now;
-      onHit(Math.min(1, (rms - threshold) / (threshold * 4)));
+    if (lastLevel && (rms < lastLevel * 0.4 || now - last > 600)) lastLevel = 0;  // the last hit has died down
+    if (!lastLevel && rms > threshold && rms > floor * 2 && rms > base * 1.6 && now - last > 160 && now > ignoreUntil) {
+      last = now; lastLevel = rms;
+      onHit(Math.min(1, (rms - threshold) / (threshold * 6)));
     }
-    prev = rms;
+    recent.push(rms);
+    if (recent.length > 9) recent.shift();
     onLevel(rms);
     raf = requestAnimationFrame(loop);
   }
 
+  const live = () => stream && stream.getAudioTracks().some((t) => t.readyState === 'live');
+
   return {
-    get on() { return Boolean(stream); },
-    set sensitivity(s) { threshold = 0.3 * Math.pow(0.7, s - 1); },
+    get on() { return listening; },
+    // 1 = only loud hits, 10 = very light taps (the iPad's mic is quiet with its own volume levelling off)
+    set sensitivity(s) { threshold = 0.16 * Math.pow(0.62, s - 1); },
     get threshold() { return threshold; },
     ignore(ms) { ignoreUntil = performance.now() + ms; },
-    async start(hit, level) {
-      onHit = hit; onLevel = level;
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state !== 'running') await ctx.resume();
-      analyser = ctx.createAnalyser();
-      analyser.fftSize = 1024;
-      buf = new Float32Array(analyser.fftSize);
-      ctx.createMediaStreamSource(stream).connect(analyser);
+    async start(hit, level, ended) {
+      onHit = hit; onLevel = level; onEnd = ended || (() => {});
+      // Made and resumed right away, while the tap still counts (no waiting before this).
+      if (!ctx || ctx.state === 'closed') ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const resumed = ctx.state === 'running' ? null : ctx.resume().catch(() => {});
+      if (!live()) {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 1024;
+        buf = new Float32Array(analyser.fftSize);
+        ctx.createMediaStreamSource(stream).connect(analyser);
+        // The iPad can cut the mic off (another app took it, or this one sat in the background).
+        stream.getAudioTracks().forEach((t) => t.addEventListener('ended', () => { if (listening) { this.stop(); onEnd(); } }));
+      }
+      stream.getAudioTracks().forEach((t) => { t.enabled = true; });
+      if (resumed) await Promise.race([resumed, new Promise((r) => setTimeout(r, 1500))]);
+      if (ctx.state !== 'running') await ctx.resume().catch(() => {});
+      recent = []; listening = true;
+      cancelAnimationFrame(raf);
       loop();
     },
     stop() {
       cancelAnimationFrame(raf);
-      if (stream) stream.getTracks().forEach((t) => t.stop());
-      if (ctx) ctx.close();
-      stream = null; ctx = null;
+      listening = false;
+      if (stream) stream.getAudioTracks().forEach((t) => { t.enabled = false; });
+      if (ctx && ctx.state === 'running') ctx.suspend().catch(() => {});
     },
   };
 })();
@@ -342,7 +362,7 @@ function reactScreen(worldId) {
   const sens = $('sens');
   sens.value = store.get('sens', 6);
   Listener.sensitivity = Number(sens.value);
-  const scale = (v) => Math.min(1, Math.sqrt(v / 0.4));
+  const scale = (v) => Math.min(1, Math.sqrt(v / 0.25));
   const markThreshold = () => { $('mark').style.left = `${scale(Listener.threshold) * 100}%`; };
   markThreshold();
   sens.addEventListener('input', () => { Listener.sensitivity = Number(sens.value); store.set('sens', Number(sens.value)); markThreshold(); });
@@ -359,10 +379,13 @@ function reactScreen(worldId) {
     if (Listener.on) { Listener.stop(); store.set('listen', false); markMic(); return; }
     $('mic-note').textContent = '';
     try {
-      await Listener.start((p) => trigger(p), (v) => { $('level').style.width = `${scale(v) * 100}%`; });
+      await Listener.start((p) => trigger(p), (v) => { $('level').style.width = `${scale(v) * 100}%`; }, () => { if (document.body.contains(mic)) markMic(); });
       store.set('listen', true);
-    } catch {
-      $('mic-note').textContent = 'The microphone is off for this app. Turn it on in the iPad\'s Settings, or just tap the picture.';
+    } catch (err) {
+      Listener.stop();
+      $('mic-note').textContent = err && err.name === 'NotAllowedError'
+        ? 'The iPad said no to the microphone. Close the app fully (swipe it away), open it again and tap Allow. Or just tap the picture.'
+        : 'The microphone didn\'t start. Tap Listen again, or just tap the picture.';
     }
     markMic();
   };

@@ -99,7 +99,12 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   Verse pages play G C G D, chorus pages C D G G. It's for when David isn't there: when he plays guitar
   the music stays off. Speed in Settings. No voices or singing, ever.
 - **Cause & Effect:** the microphone detects any hit (loudness jump over a learned noise floor,
-  `Listener` in react.js) plus taps on the picture. Sensitivity slider with a live meter. Worlds:
+  `Listener` in react.js) plus taps on the picture. Sensitivity slider with a live meter.
+  iPad mic (v15, David: not working / not sensitive, kept having to close the apps app to allow it): the audio
+  starts inside the Listen tap (before waiting for the mic), the mic is asked for once per visit and kept
+  (switched off, not closed, between uses), a hit = a jump over the quietest level of the last ~150 ms, and the
+  slider reaches ~4x quieter hits (6 now = old 10). Home Screen apps (the apps app too) remember a "no" until
+  fully closed, so the error message says that. Worlds:
   Ocean, Animals, Vehicles, Party, Halloween; pictures are pinned to the bottom of the stage (`ground` is in
   picture units).
 - **Halloween world** (added 2026-10-21; keep it friendly, never scary): every third hit opens the house's
