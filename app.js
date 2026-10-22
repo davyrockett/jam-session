@@ -128,17 +128,20 @@ function fire(name) {
   Groove.fx(FX_SOUNDS[name] || 'pop');
 }
 
-function bookScreen(id, pageNum) {
-  const song = [...allSongs(), ...ROUTINES].find((s) => s.id === id);
+// draft: a Song Builder song that isn't saved yet. It opens as a book first; Edit and the
+// last page's Finish lead to the words screen.
+function bookScreen(id, pageNum, draft) {
+  const song = draft || [...allSongs(), ...ROUTINES].find((s) => s.id === id);
   if (!song) return go('#/songs', true);
-  const backTo = song.routine ? '#/' : '#/songs';
+  const backTo = draft ? '#/builder/go' : song.routine ? '#/' : '#/songs';
+  const editLink = draft ? '#/builder/review' : song.id.startsWith('my-') ? `#/builder/edit/${song.id}` : '';
   const pages = [{ cover: true, scene: song.cover, part: 'verse' }, ...song.pages];
   let n = Math.max(0, Math.min(pages.length - 1, pageNum || 0));
 
   Groove.follow(() => pages[n].part);
 
   show(`<div class="screen book">
-    <div class="topbar">${homeBtn(backTo)}<div class="title"><h2>${esc(song.title)}</h2><p id="page-count"></p></div>${song.id.startsWith('my-') ? `<a class="icon-btn" href="#/builder/edit/${song.id}">Edit</a>` : ''}${settingsBtn}</div>
+    <div class="topbar">${homeBtn(backTo)}<div class="title"><h2>${esc(song.title)}</h2><p id="page-count"></p></div>${editLink ? `<a class="icon-btn" href="${editLink}">Edit</a>` : ''}${settingsBtn}</div>
     <div class="page" id="page"><div class="art-wrap"><div class="art" id="art"></div></div><div class="words" id="words"></div></div>
     <div class="dots" id="dots">${pages.map(() => '<span></span>').join('')}</div>
     <div class="bottombar">
@@ -175,10 +178,10 @@ function bookScreen(id, pageNum) {
     [...$('dots').children].forEach((d, i) => d.classList.toggle('on', i === n));
     $('prev').disabled = n === 0;
     const last = n === pages.length - 1;
-    $('next-lbl').textContent = last ? 'Start over' : 'Next';
-    $('next-icon').innerHTML = last ? ICON.again : ICON.next;
+    $('next-lbl').textContent = !last ? 'Next' : draft ? 'Finish' : 'Start over';
+    $('next-icon').innerHTML = last && !draft ? ICON.again : ICON.next;
     if (dir) { page.classList.remove('enter'); void page.offsetWidth; page.style.setProperty('--from', dir > 0 ? '24px' : '-24px'); page.classList.add('enter'); }
-    history.replaceState(null, '', `#/song/${song.id}/${n}`);
+    history.replaceState(null, '', draft ? `#/builder/preview/${n}` : `#/song/${song.id}/${n}`);
   }
 
   // Verse 1, 2, 3…: a new verse starts on a verse page right after the cover or a chorus.
@@ -189,7 +192,7 @@ function bookScreen(id, pageNum) {
   };
 
   const turn = (dir) => {
-    if (dir > 0 && n === pages.length - 1) n = 0;
+    if (dir > 0 && n === pages.length - 1) { if (draft) return go('#/builder/review'); n = 0; }
     else n = Math.max(0, Math.min(pages.length - 1, n + dir));
     draw(dir);
   };

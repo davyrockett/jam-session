@@ -74,6 +74,9 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
 - **Activities** (menu in `app.js` `ACTIVITIES`): Songbook (picture books, `songs.js`), Cause & Effect
   (`react.js`), Song Builder (`builder.js`), Hello / Goodbye (`ROUTINES` in `songs.js`, read with the
   same book reader), Choice Board (`choice.js`). Screens are chosen by the `#/…` address (`route()` in app.js).
+- **Song Builder flow** (David, 2026-10-21): after the last choice the new song opens full screen in the book
+  reader (`#/builder/preview`, `bookScreen(null, n, built)`), then Finish / Edit go to the words screen
+  (`#/builder/review`), which saves it. Typed words go straight into the unsaved song, so going back shows them.
 - **Magic words:** in lyrics, `[word](name)` becomes a tappable orange word. Tapping it sets off the picture's
   parts named `name`: `reveal()` parts are hidden until tapped, `play()` parts hop/shake/board (art.js), plus a
   synth sound (`FX_SOUNDS` in app.js, `Groove.fx` in music.js). Tapping a person in the picture makes them hop;

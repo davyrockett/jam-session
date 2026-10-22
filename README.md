@@ -22,7 +22,8 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   the house's door (the dots on the door count 1, 2, 3). On three the door opens and a friendly monster or a
   candy bucket jumps out: "Trick or treat!"
 - **Song Builder** – the client picks pictures: what we saw, its colour, what it did, how it felt. The app
-  writes a 4-page story song. Change any words, then **Save to Songbook**. Saved songs have an **Edit** button
+  writes a 4-page story song and opens it as a picture book with the words, so you can sing it right away.
+  Tap **Finish** on the last page (or **Edit** at the top) to change any words, then **Save to Songbook**. Saved songs have an **Edit** button
   (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
   Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween** (a pumpkin, ghost, bat, spider, cat or
   candy at the haunted house, which can say BOO, fly to the moon, knock on the door or dance; the song ends

@@ -1,6 +1,7 @@
 // Song Builder: the client picks pictures (what we saw, its colour, what it did,
-// how it felt) and the app writes a 4-page story song. David can retype any line,
-// then it's saved on this iPad as a picture book in the Songbook.
+// how it felt) and the app writes a 4-page story song. It opens as a picture book first
+// (#/builder/preview), then David can retype any line (#/builder/review) and save it
+// as a picture book in the Songbook.
 
 const PLACES = {
   ocean: { world: 'ocean', place: 'the ocean' },
@@ -86,7 +87,8 @@ function writeSong(d) {
   };
 }
 
-let draft = null;   // the song being built
+let draft = null;   // the choices being made
+let built = null;   // the song written from them, not saved yet
 
 function builderScreen(mode, editId) {
   if (mode === 'edit') {
@@ -94,6 +96,8 @@ function builderScreen(mode, editId) {
     if (!song) return go('#/songs', true);
     return reviewScreen(JSON.parse(JSON.stringify(song)));
   }
+  if (mode === 'preview') return built ? bookScreen(null, parseInt(editId, 10) || 0, built) : go('#/builder', true);
+  if (mode === 'review') return built ? reviewScreen(built) : go('#/builder', true);
   if (mode !== 'go' || !draft) draft = { step: 0 };
 
   const steps = [
@@ -132,7 +136,7 @@ function builderScreen(mode, editId) {
     draft[step.key] = opts[Number(b.dataset.i)].value;
     setTimeout(() => {
       if (draft.step < steps.length - 1) { draft.step++; builderScreen('go'); }
-      else reviewScreen(writeSong(draft));
+      else { built = writeSong(draft); go('#/builder/preview'); }
     }, 700);
   });
   $('prev').onclick = () => { draft.step--; builderScreen('go'); };
@@ -142,7 +146,7 @@ function builderScreen(mode, editId) {
 function reviewScreen(song) {
   const isNew = !song.id;
   show(`<div class="screen review">
-    <div class="topbar">${homeBtn(isNew ? '#/builder' : `#/song/${song.id}/0`)}<div class="title"><h2>${isNew ? 'Our new song' : 'Edit song'}</h2><p>Change any words you like.</p></div>${settingsBtn}</div>
+    <div class="topbar">${homeBtn(isNew ? '#/builder/preview' : `#/song/${song.id}/0`)}<div class="title"><h2>${isNew ? 'Our new song' : 'Edit song'}</h2><p>Change any words you like.</p></div>${settingsBtn}</div>
     <div class="review-head">
       <div class="review-cover">${scene(song.cover)}</div>
       <div class="fields">
@@ -160,16 +164,21 @@ function reviewScreen(song) {
     </div>
   </div>`);
 
-  $('r-save').onclick = () => {
+  // Typed words go straight into the song, so going back to the book shows them.
+  const take = () => {
     song.title = $('r-title').value.trim() || 'Our Song';
     song.by = $('r-by').value.trim() || 'Us';
     document.querySelectorAll('[data-p]').forEach((inp) => { song.pages[inp.dataset.p].lines[inp.dataset.l] = inp.value; });
+  };
+  document.querySelector('.review').addEventListener('input', take);
+  $('r-save').onclick = () => {
+    take();
     if (isNew) song.id = `my-${Date.now()}`;
     saveMySong(song);
-    draft = null;
+    draft = null; built = null;
     go(`#/song/${song.id}/0`);
   };
-  if (isNew) $('r-again').onclick = () => { draft = null; go('#/builder', true); };
+  if (isNew) $('r-again').onclick = () => { draft = null; built = null; go('#/builder', true); };
   else $('r-delete').onclick = () => {
     if (!confirm(`Delete "${song.title}"? This can't be undone.`)) return;
     deleteMySong(song.id);
