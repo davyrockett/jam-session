@@ -71,7 +71,7 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   (newest edit wins, deletions remembered). Each device needs David's fine-grained access key pasted in
   Settings (stored on the device only). Always save/delete through `saveMySong()` / `deleteMySong()`.
   Local copy is localStorage `js.songs`; the app syncs on open and when it comes back to the front.
-- **Activities** (menu in `app.js` `ACTIVITIES`): Songbook (picture books, `songs.js`), Cause & Effect
+- **Activities** (menu in `app.js` `ACTIVITIES`; tiles are shorter than the Songbook's, 2:1 pictures cropped to fill, David v16): Songbook (picture books, `songs.js`), Cause & Effect
   (`react.js`), Song Builder (`builder.js`), Hello / Goodbye (`ROUTINES` in `songs.js`, read with the
   same book reader), Choice Board (`choice.js`). Screens are chosen by the `#/…` address (`route()` in app.js).
 - **Song Builder flow** (David, 2026-10-21): after the last choice the new song opens full screen in the book
@@ -103,7 +103,8 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   iPad mic (v15, David: not working / not sensitive, kept having to close the apps app to allow it): the audio
   starts inside the Listen tap (before waiting for the mic), the mic is asked for once per visit and kept
   (switched off, not closed, between uses), a hit = a jump over the quietest level of the last ~150 ms, and the
-  slider reaches ~4x quieter hits (6 now = old 10). Home Screen apps (the apps app too) remember a "no" until
+  slider reaches ~10x quieter hits than v14 (v16, David: still not sensitive enough; default 8 for new
+  devices; the meter reads in decibel-like steps so quiet sounds move it). Home Screen apps (the apps app too) remember a "no" until
   fully closed, so the error message says that. Worlds:
   Ocean, Animals, Vehicles, Party, Halloween; pictures are pinned to the bottom of the stage (`ground` is in
   picture units).

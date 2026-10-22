@@ -389,21 +389,21 @@ function scene(name) {
 
 const THUMBS = {
   // A hand drum with a burst of stars.
-  react: () => `<svg data-sketch viewBox="0 0 400 300" role="img">${rays(200, 170, '#FFE08A', '#FFD34D')}
+  react: () => `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice">${rays(200, 170, '#FFE08A', '#FFD34D')}
     ${star(90, 70, 18, '#E74C3C')}${star(310, 64, 22, '#2563EB')}${star(330, 170, 14, '#27AE60')}${star(70, 180, 14, '#E84393')}
     <path d="M140 150 L260 150 L240 262 L160 262 Z" fill="#C0392B" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
     <path d="M150 190 L250 190 M156 226 L244 226" stroke="#F1C40F" stroke-width="6"/>
     <ellipse cx="200" cy="150" rx="62" ry="18" fill="#F5E6C8" stroke="${INK}" stroke-width="4"/>
     <path d="M200 80 L200 112 M160 92 L176 118 M240 92 L224 118" stroke="${INK}" stroke-width="6" stroke-linecap="round"/></svg>`,
   // A notebook with a pencil and notes.
-  builder: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#D5F0DD"/>
+  builder: () => `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#D5F0DD"/>
     <rect x="100" y="50" width="200" height="210" rx="12" fill="#fff" stroke="${INK}" stroke-width="4"/>
     <path d="M126 100 h148 M126 140 h148 M126 180 h148 M126 220 h100" stroke="#BDC3C7" stroke-width="4" stroke-linecap="round"/>
     ${note(150, 140, '#8E44AD', 1.6)}${note(230, 180, '#E84393', 1.4)}
     <g transform="rotate(35 300 190)"><rect x="286" y="110" width="28" height="140" rx="4" fill="#F1C40F" stroke="${INK}" stroke-width="4"/>
     <path d="M286 250 L300 280 L314 250 Z" fill="#F5CBA7" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><rect x="286" y="104" width="28" height="18" rx="3" fill="#E84393" stroke="${INK}" stroke-width="4"/></g></svg>`,
   // A big waving hand and a sun coming up.
-  hello: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#FFE9C7"/>${sun(200, 300, 110, '#FFC24D')}
+  hello: () => `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#FFE9C7"/>${sun(200, 300, 110, '#FFC24D')}
     <g transform="translate(200 210) rotate(-12)" fill="#D9A877" stroke="${INK}" stroke-width="4" stroke-linejoin="round">
       <rect x="-42" y="-60" width="84" height="80" rx="30"/>
       <rect x="-40" y="-130" width="18" height="84" rx="9"/><rect x="-18" y="-146" width="18" height="100" rx="9"/>
@@ -411,7 +411,7 @@ const THUMBS = {
       <rect x="-76" y="-46" width="44" height="18" rx="9" transform="rotate(35 -54 -37)"/></g>
     <path d="M90 90 q -14 30 0 60 M66 76 q -22 44 0 88 M310 90 q 14 30 0 60 M334 76 q 22 44 0 88" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
   // Four picture choices.
-  choice: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#E3E8FF"/>
+  choice: () => `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#E3E8FF"/>
     <rect x="70" y="40" width="120" height="100" rx="14" fill="#FFD34D" stroke="${INK}" stroke-width="4"/>
     <rect x="210" y="40" width="120" height="100" rx="14" fill="#7DDB8B" stroke="${INK}" stroke-width="4"/>
     <rect x="70" y="160" width="120" height="100" rx="14" fill="#5DADE2" stroke="${INK}" stroke-width="4"/>
@@ -419,7 +419,7 @@ const THUMBS = {
     ${star(130, 90, 26, '#fff')}${note(262, 106, '#fff', 1.7)}
     <path d="M110 230 q 20 -40 40 0 q -20 20 -40 0 Z" fill="#fff"/><circle cx="270" cy="210" r="26" fill="#fff"/></svg>`,
   // A waving hand and the moon.
-  goodbye: () => `<svg data-sketch viewBox="0 0 400 300" role="img"><rect width="400" height="300" fill="#2B3A6B"/>
+  goodbye: () => `<svg data-sketch viewBox="0 0 400 300" role="img" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#2B3A6B"/>
     <circle cx="310" cy="70" r="34" fill="#F7F3D0"/><circle cx="326" cy="60" r="30" fill="#2B3A6B"/>
     ${star(70, 50, 6, '#fff')}${star(150, 30, 5, '#fff')}${star(240, 44, 4, '#fff')}${star(360, 160, 5, '#fff')}${star(40, 150, 4, '#fff')}
     <g transform="translate(200 230) rotate(12)" fill="#D9A877" stroke="${INK}" stroke-width="4" stroke-linejoin="round">

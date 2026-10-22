@@ -111,7 +111,7 @@ const Listener = (() => {
     const base = recent.length ? Math.min(...recent) : rms;
     const now = performance.now();
     if (lastLevel && (rms < lastLevel * 0.4 || now - last > 600)) lastLevel = 0;  // the last hit has died down
-    if (!lastLevel && rms > threshold && rms > floor * 2 && rms > base * 1.6 && now - last > 160 && now > ignoreUntil) {
+    if (!lastLevel && rms > threshold && rms > floor * 1.6 && rms > base * 1.4 && now - last > 160 && now > ignoreUntil) {
       last = now; lastLevel = rms;
       onHit(Math.min(1, (rms - threshold) / (threshold * 6)));
     }
@@ -125,8 +125,8 @@ const Listener = (() => {
 
   return {
     get on() { return listening; },
-    // 1 = only loud hits, 10 = very light taps (the iPad's mic is quiet with its own volume levelling off)
-    set sensitivity(s) { threshold = 0.16 * Math.pow(0.62, s - 1); },
+    // 1 = only loud hits, 10 = the lightest tap the room's noise allows (the iPad's mic is quiet with its own volume levelling off)
+    set sensitivity(s) { threshold = 0.1 * Math.pow(0.58, s - 1); },
     get threshold() { return threshold; },
     ignore(ms) { ignoreUntil = performance.now() + ms; },
     async start(hit, level, ended) {
@@ -360,9 +360,10 @@ function reactScreen(worldId) {
 
   // Microphone
   const sens = $('sens');
-  sens.value = store.get('sens', 6);
+  sens.value = store.get('sens', 8);
   Listener.sensitivity = Number(sens.value);
-  const scale = (v) => Math.min(1, Math.sqrt(v / 0.25));
+  // The meter reads in steps of loudness (like decibels), so quiet sounds still move it.
+  const scale = (v) => Math.max(0, Math.min(1, (Math.log10(Math.max(v, 1e-5)) + 3.6) / 3.2));
   const markThreshold = () => { $('mark').style.left = `${scale(Listener.threshold) * 100}%`; };
   markThreshold();
   sens.addEventListener('input', () => { Listener.sensitivity = Number(sens.value); store.set('sens', Number(sens.value)); markThreshold(); });

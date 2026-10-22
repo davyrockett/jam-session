@@ -70,7 +70,7 @@ const homeBtn = (to = '#/') => `<a class="icon-btn" href="${to}" aria-label="Bac
 function menuScreen() {
   show(`<div class="screen">
     <div class="topbar"><div class="title"><h1>Jam Session</h1><p>Music activities for sessions.</p></div>${settingsBtn}</div>
-    <div class="tiles">${ACTIVITIES.map((a) => `
+    <div class="tiles menu">${ACTIVITIES.map((a) => `
       <button type="button" class="tile" data-go="#/${a.id}" ${a.ready ? '' : 'disabled'}>
         <div class="thumb">${a.thumb()}</div>
         ${a.ready ? '' : '<span class="soon">Coming soon</span>'}
