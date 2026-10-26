@@ -49,6 +49,7 @@ const ACTIVITIES = [
   { id: 'songs', name: 'Songbook', about: 'Picture books of our songs.', thumb: () => scene('cover'), ready: true },
   { id: 'react', name: 'Cause & Effect', about: 'Play a hit, something happens.', thumb: () => THUMBS.react(), ready: true },
   { id: 'builder', name: 'Song Builder', about: 'Pick pictures, make a new song.', thumb: () => THUMBS.builder(), ready: true },
+  { id: 'silly', name: 'Silly Songs', about: 'Pick silly words, then sing!', thumb: () => sillyMenuThumb(), ready: true },
   { id: 'hello', name: 'Hello', about: 'The hello song.', thumb: () => scene('helloSun'), ready: true },
   { id: 'choice', name: 'Choice Board', about: 'What should we do next?', thumb: () => THUMBS.choice(), ready: true },
   { id: 'goodbye', name: 'Goodbye', about: 'The goodbye song.', thumb: () => scene('byeFriends'), ready: true },
@@ -254,6 +255,7 @@ function route() {
   if (parts[0] === 'react') return reactScreen(parts[1]);
   if (parts[0] === 'choice') return choiceScreen(parts[1]);
   if (parts[0] === 'builder') return builderScreen(parts[1], parts[2]);
+  if (parts[0] === 'silly') return sillyScreen(parts[1], parts[2], parseInt(parts[3], 10) || 0);
   if (parts[0] === 'hello' || parts[0] === 'goodbye') return bookScreen(parts[0], 0);
   if (parts[0] === 'song') return bookScreen(parts[1], parseInt(parts[2], 10) || 0);
   menuScreen();

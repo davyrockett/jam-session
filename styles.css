@@ -290,3 +290,40 @@ dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .48 0 0 0 0 .38 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .stage::after { z-index: 3; }
+
+/* Silly Songs: a board of 24 pictures, then the song with the picks highlighted */
+.silly-pick { height: 100dvh; }
+.silly-pick .ask-big { margin-bottom: 12px; }
+.silly-grid { flex: 1; min-height: 0; display: grid; gap: 10px; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); }
+.sp-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 0; padding: 6px;
+  border: 3px solid var(--line); border-radius: 18px; background: var(--surface); cursor: pointer; transition: transform .3s, opacity .3s, border-color .2s, background .12s; }
+.sp-tile img { flex: 1; min-height: 0; max-height: 72px; width: 100%; object-fit: contain; }
+.sp-tile span { font-family: var(--f-display); font-weight: 800; font-size: clamp(17px, 1.9vw, 26px); text-transform: uppercase; line-height: 1; text-align: center; }
+.sp-tile:disabled { opacity: .25; cursor: default; }
+.sp-tile.lit { background: var(--hl); border-color: var(--accent); transform: scale(1.06); }
+.sp-tile.chosen { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.08); }
+.silly-grid.decided .sp-tile:not(.chosen) { opacity: .2; transform: scale(.94); }
+@media (max-aspect-ratio: 1/1) { .silly-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .silly-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow-y: auto; grid-auto-rows: 110px; } }
+.silly-empty { color: var(--muted); font-size: 1.2rem; max-width: 640px; }
+.swap { font: inherit; text-transform: inherit; letter-spacing: inherit; color: var(--accent-ink); background: var(--accent-soft); border: 0;
+  border-bottom: 4px solid var(--accent); border-radius: 10px; padding: 0 .15em; white-space: nowrap; cursor: pointer; }
+.lyrics.chorus .swap { background: var(--surface); }
+.nw { white-space: nowrap; }
+.sw-pic { width: 1.05em; height: 1.05em; vertical-align: -.16em; margin-right: .12em; }
+.swap.go .sw-pic { animation: swapWiggle .5s ease-in-out; }
+@keyframes swapWiggle { 25% { transform: rotate(-14deg) scale(1.3); } 75% { transform: rotate(14deg) scale(1.3); } }
+.silly-stage { background: #EBDDFB; }
+@media (min-aspect-ratio: 1/1) { .silly-book .page { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
+.silly-art { width: 100%; height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-content: center; gap: 4%; padding: 6%; }
+.silly-art span { flex: 0 0 auto; width: 70%; display: flex; animation: sillyBob 2.6s ease-in-out infinite; }
+.silly-art.n2 span { width: 44%; } .silly-art.n3 span, .silly-art.n4 span { width: 40%; }
+.silly-art img { width: 100%; height: auto; }
+@keyframes sillyBob { 50% { transform: translateY(-5%) rotate(-3deg); } }
+.silly-words { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px; }
+.silly-words > div { display: flex; flex-direction: column; align-items: center; gap: 6px; animation: sillyBob 2.6s ease-in-out infinite; }
+.silly-words img { width: clamp(90px, 15vw, 190px); height: auto; }
+.silly-words span { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 3.4vw, 46px); text-transform: uppercase; }
+a.big-btn { text-decoration: none; color: inherit; }
+.silly-done .choose-bar { gap: 16px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { .silly-art span, .silly-words > div { animation: none; } }

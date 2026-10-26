@@ -115,6 +115,16 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   the door count the knocks. The house is centred so tall (portrait) screens still show it. Halloween
   things are in objects.js with topic `halloween`. Song Builder has a Halloween topic too (`PLACES.halloween`
   with its own last line, actions boo / fly / knock; `thingX` puts the thing beside the house).
+- **Silly Songs (2026-10-25, `silly.js`):** David asked for Song Party's silly words (mad libs) here too. The songs are
+  read from Song Party's public song list (`/song-party-data/data.json`, the live site when testing on localhost; last
+  copy kept in `js.silly` for no signal): any song whose lyrics have `{word|kind}`. Same rules and boards as Song
+  Party's madlib.js (`SILLY_KINDS`: thing / things / describe, 24 pictures each; change both apps together): the pick
+  screen never shows the lyrics (David: "It's supposed to be a surprise when you sing it"), only the kind of word.
+  Flow `#/silly` list → `#/silly/<id>` pick (Surprise spin, Real word, Back) → `#/silly/<id>/sing/<n>` book pages (picture
+  = the silly things sung on that page, big; words column wider in landscape) → `#/silly/<id>/done` (Sing it again /
+  Pick new words, `/new`). Picks live in memory only. Each silly song is also a Choice Board card. Pictures are
+  Song Party's Twemoji library copied in (`pics.js` + `pics/`, all precached by sw.js; credit in Settings and README);
+  copy them over again when Song Party gets new pictures. No music button here (the groove's chords don't fit these songs).
 - **Hello song lyrics are a placeholder** until David sends them (`ROUTINES` in songs.js).
 - **Test locally:** `Start Jam Session.command`, or `python3 -m http.server 8773` here and open
   http://localhost:8773/. Offline caching is switched off on localhost so tests always load fresh files.

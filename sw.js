@@ -2,9 +2,11 @@
 //
 // IMPORTANT: whenever any file below changes, bump VERSION.
 // That is how phones and iPads learn there's an update to download.
-const VERSION = 'v20';
+const VERSION = 'v21';
 const CACHE = `jamsession-${VERSION}`;
 const FONTS = 'jamsession-fonts';
+
+importScripts('pics.js');   // the picture list (PICS) for Silly Songs
 
 const ASSETS = [
   './',
@@ -24,12 +26,14 @@ const ASSETS = [
   './react.js',
   './choice.js',
   './builder.js',
+  './pics.js',
+  './silly.js',
   './sync.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
-];
+].concat([...new Set(Object.values(PICS))].map((code) => `./pics/${code}.svg`));
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

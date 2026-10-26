@@ -28,6 +28,13 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween** (a pumpkin, ghost, bat, spider, cat or
   candy at the haunted house, which can say BOO, fly to the moon, knock on the door or dance; the song ends
   "Happy Halloween!").
+- **Silly Songs** – Mad Libs for songs. Pick a song (first one: Ring of Fire), then pick silly words without seeing
+  the lyrics: the screen just says **Pick a describing word!**, **Pick a thing!** or **Pick lots of something!** with
+  pictures of words that fit. **Surprise!** spins the board and lands on one; **Real word** keeps the song's own word.
+  Then the song opens as a book with your words in it, highlighted next to their pictures (tap one to make it wiggle).
+  The last screen shows all your silly words: **Sing it again** or **Pick new words**. The songs come from Song Party:
+  any song there with words in curly brackets, like `ring of {fire|things}`, shows up here too (it keeps the last copy
+  for when there's no signal). Pictures: [Twemoji](https://github.com/jdecked/twemoji), CC-BY 4.0.
 - **Hello / Goodbye** – the session songs as picture books. Type the client's first name on the first page and
   it appears in the words. Names are never saved.
 - **Choice Board** – pick 2 to 4 activities, tap **Show choices**, and the client picks what's next.

@@ -9,6 +9,7 @@ function choiceCards() {
       w.things[0] === 'fireworks' ? OBJECTS.cake.draw() : OBJECTS[w.things[0]].draw()}</g>${w.front()}</svg>`,
   }));
   cards.push({ id: 'builder', label: 'Song Builder', art: () => THUMBS.builder(), go: '#/builder' });
+  sillySongs.forEach((s) => cards.push({ id: `silly:${s.id}`, label: s.title, art: () => sillyThumb(s), go: `#/silly/${s.id}/new` }));
   return cards;
 }
 
