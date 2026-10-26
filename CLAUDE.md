@@ -88,7 +88,10 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   build people from the **character kit** (`characters.js`: arms bend at the elbow and reach a target point,
   fixed proportions, wheelchair drawn from references), and check every picture large on **`artcheck.html`**
   (http://localhost:8773/artcheck.html, all surprises shown) before calling it done.
-- **Sketch style:** `sketch.js` redraws every `<svg data-sketch>` with Rough.js (`vendor/rough.js`, MIT):
+- **Picture style (David, 2026-10-25): "I'm glad that you're using the emoji style. I really dislike the sketch style
+  images we're using on Jam Session."** Use the bundled emoji pictures (`pics.js`/`pics/`, Twemoji) for anything new;
+  don't add more sketch drawings. Swapping the existing scenes over is a possible follow-up (not asked for yet).
+- **Sketch style (older pictures):** `sketch.js` redraws every `<svg data-sketch>` with Rough.js (`vendor/rough.js`, MIT):
   wobbly pen outlines, light pencil shading only on bigger shapes (David: "use more sparingly"), flat
   backgrounds, crisp faces (`class="noshade"` on heads), plus a paper grain in styles.css.
 - **Pictures are drawn in code (SVG)**: whole scenes in `art.js` (`SCENES`; people come from `characters.js`),

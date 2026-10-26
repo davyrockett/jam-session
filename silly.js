@@ -43,7 +43,8 @@ function loadSilly() {
     .then((d) => {
       sillySongs = Object.entries(d.items || {})
         .filter(([, s]) => s.type === 'song' && !s.deleted && !s.activity && /\{[^{}]+\}/.test(s.lyrics || ''))
-        .map(([id, s]) => ({ id, title: s.title, pic: s.pic, lyrics: s.lyrics }))
+        // "Hound Dog (Silly Words)" is just "Hound Dog" here: every song in this list is a silly one.
+        .map(([id, s]) => ({ id, title: s.title.replace(/\s*\(silly words\)$/i, ''), pic: s.pic, lyrics: s.lyrics }))
         .sort((a, b) => a.title.localeCompare(b.title));
       store.set('silly', sillySongs);
       return true;
