@@ -20,6 +20,7 @@ const picSvg = (name) => `<svg viewBox="-4 -4 108 108">${picImage(name, 4, 4, 92
 const COSTUMES = {
   superhero: 'a superhero', princess: 'a princess', astronaut: 'an astronaut', cowboy: 'a cowboy',
   dinosaur: 'a dinosaur', robot: 'a robot', wizard: 'a wizard', unicorn: 'a unicorn',
+  witch: 'a witch', frankenstein: 'Frankenstein',
 };
 const TREATS = {
   candy: 'some candy', lollipop: 'a lollipop', chocolate: 'some chocolate', cookie: 'a cookie',

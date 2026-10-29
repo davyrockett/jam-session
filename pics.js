@@ -36,7 +36,8 @@ var PICS = {
   happy: '1f60a', smile: '1f603', sad: '1f622', angry: '1f620', sleepy: '1f634', surprised: '1f62e', silly: '1f61c', freezing: '1f976',
   // Jam Session only (Song Builder's Halloween song): keep these when copying from Song Party
   superhero: '1f9b8', princess: '1f478', astronaut: '1f9d1-200d-1f680', wizard: '1f9d9', cowboy: '1f920',
-  lollipop: '1f36d', peekaboo: '1f648',
+  witch: '1f9d9-200d-2640-fe0f', lollipop: '1f36d', peekaboo: '1f648',
+  frankenstein: 'frankenstein',   // not Twemoji: drawn here in the same flat style (there's no Frankenstein emoji)
 };
 function picUrl(name) {
   var code = PICS[String(name || '').toLowerCase()];

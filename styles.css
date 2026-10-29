@@ -232,6 +232,9 @@ dialog::backdrop { background: rgb(0 0 0 / .4); }
 .options.n5, .options.n6, .options.n7, .options.n8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .options .pick { height: 100%; max-height: 300px; }
 .options.n5 .pick, .options.n6 .pick, .options.n7 .pick, .options.n8 .pick { max-height: 220px; }
+.options.n10 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.options.n10 .pick { max-height: 220px; }
+.options.n10 .pick span { font-size: clamp(16px, 2vw, 30px); }
 .options .pick-art { padding: 8px; background: var(--surface); }
 .options .pick span { text-align: center; font-size: clamp(22px, 2.6vw, 34px); }
 .options.decided .pick:not(.chosen) { opacity: .2; transform: scale(.94); }

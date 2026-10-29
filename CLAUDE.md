@@ -121,7 +121,8 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   David (2026-10-28) asked for "more choices, more story": the Halloween song has two extra questions (steps with
   `only: 'halloween'`): costume (`COSTUMES`) and treat (`TREATS`), emoji pictures; `writeSong()` makes an 8-page song
   with a "Trick or treat" chorus (`TRICK_OR_TREAT`) twice. New emoji are in the "Jam Session only" block of pics.js
-  (keep it when copying pics.js from Song Party). Halloween silly song: "Five Little Pumpkins" (traditional) in
+  (keep it when copying pics.js from Song Party); `pics/frankenstein.svg` is drawn by hand in the flat emoji style
+  (no Frankenstein emoji exists; David asked for witch and Frankenstein costumes). Halloween silly song: "Five Little Pumpkins" (traditional) in
   song-party-data, so it's in Song Party's list too.
 - **Silly Songs (2026-10-25, `silly.js`):** David asked for Song Party's silly words (mad libs) here too. The songs are
   read from Song Party's public song list (`/song-party-data/data.json`, the live site when testing on localhost; last

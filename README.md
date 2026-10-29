@@ -27,7 +27,7 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
   Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween**, which is a longer 8-page song with two
   extra questions: what you dressed up as (superhero, princess, astronaut, cowboy, dinosaur, robot, wizard,
-  unicorn) and what treat we got (8 treats). At the haunted house you can see a pumpkin, ghost, bat, spider,
+  unicorn, witch, Frankenstein) and what treat we got (8 treats). At the haunted house you can see a pumpkin, ghost, bat, spider,
   cat, candy, monster or fuzzy monster, which can say BOO, fly to the moon, knock, dance, wave hello or play
   peek-a-boo. It has a "Trick or treat" chorus (twice) and ends "Happy Halloween!".
 - **Silly Songs** – Mad Libs for songs. Pick a song (first one: Ring of Fire), then pick silly words without seeing
