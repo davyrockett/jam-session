@@ -149,15 +149,17 @@ dialog::backdrop { background: rgb(0 0 0 / .4); }
 .bounce { animation: bounce 1.5s ease-in-out infinite; }
 .float { animation: float 3s ease-in-out infinite; }
 .knockit { animation: shakeit .7s ease-in-out infinite; }
+.peek { animation: peek 2.4s ease-in-out infinite; }
 .twinkle { animation: twinkle 2s ease-in-out infinite; }
 @keyframes wv { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-18px); } }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
 @keyframes bounce { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-10px); } }
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes peek { 0%, 30%, 100% { opacity: 1; } 45%, 70% { opacity: 0; } }
 @keyframes twinkle { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
 @media (prefers-reduced-motion: reduce) {
-  .wv, .wv2, .bob, .zoom, .wiggle, .pump, .bounce, .float, .knockit, .twinkle, .page.enter { animation: none; }
+  .wv, .wv2, .bob, .zoom, .wiggle, .pump, .bounce, .float, .knockit, .peek, .twinkle, .page.enter { animation: none; }
 }
 
 /* Cause & Effect */
@@ -227,9 +229,9 @@ dialog::backdrop { background: rgb(0 0 0 / .4); }
 .builder { height: 100dvh; }
 .ask-big { font-size: clamp(34px, 4.6vw, 60px); margin: 0 0 16px; text-align: center; }
 .options { flex: 1; min-height: 0; display: grid; gap: 16px; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; }
-.options.n5, .options.n6, .options.n7 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.options.n5, .options.n6, .options.n7, .options.n8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .options .pick { height: 100%; max-height: 300px; }
-.options.n5 .pick, .options.n6 .pick, .options.n7 .pick { max-height: 220px; }
+.options.n5 .pick, .options.n6 .pick, .options.n7 .pick, .options.n8 .pick { max-height: 220px; }
 .options .pick-art { padding: 8px; background: var(--surface); }
 .options .pick span { text-align: center; font-size: clamp(22px, 2.6vw, 34px); }
 .options.decided .pick:not(.chosen) { opacity: .2; transform: scale(.94); }

@@ -25,9 +25,11 @@ On the iPad, open it in Safari, tap Share → **Add to Home Screen**. It then wo
   writes a 4-page story song and opens it as a picture book with the words, so you can sing it right away.
   Tap **Finish** on the last page (or **Edit** at the top) to change any words, then **Save to Songbook**. Saved songs have an **Edit** button
   (where you can also delete them). To keep them on every device, turn on sync in Settings (below).
-  Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween** (a pumpkin, ghost, bat, spider, cat or
-  candy at the haunted house, which can say BOO, fly to the moon, knock on the door or dance; the song ends
-  "Happy Halloween!").
+  Topics: Ocean, Animals, Vehicles, Food & parties, and **Halloween**, which is a longer 8-page song with two
+  extra questions: what you dressed up as (superhero, princess, astronaut, cowboy, dinosaur, robot, wizard,
+  unicorn) and what treat we got (8 treats). At the haunted house you can see a pumpkin, ghost, bat, spider,
+  cat, candy, monster or fuzzy monster, which can say BOO, fly to the moon, knock, dance, wave hello or play
+  peek-a-boo. It has a "Trick or treat" chorus (twice) and ends "Happy Halloween!".
 - **Silly Songs** – Mad Libs for songs. Pick a song (first one: Ring of Fire), then pick silly words without seeing
   the lyrics: the screen just says **Pick a describing word!**, **Pick a thing!** or **Pick lots of something!** with
   pictures of words that fit. **Surprise!** spins the board and lands on one; **Real word** keeps the song's own word.

@@ -8,8 +8,24 @@ const PLACES = {
   animals: { world: 'animals', place: 'the farm' },
   vehicles: { world: 'vehicles', place: 'the city' },
   food: { world: 'party', place: 'a party' },
-  halloween: { world: 'halloween', place: 'the haunted house', end: 'Happy Halloween!' },
+  halloween: { world: 'halloween', place: 'the haunted house', end: 'Happy Halloween!',
+    things: ['pumpkin', 'ghost', 'bat', 'spider', 'blackcat', 'candy', 'monster', 'furball'] },
 };
+
+// An emoji picture (pics.js) drawn inside a scene's SVG.
+const picImage = (name, x, y, size) => `<image href="${picUrl(name)}" x="${x}" y="${y}" width="${size}" height="${size}"/>`;
+const picSvg = (name) => `<svg viewBox="-4 -4 108 108">${picImage(name, 4, 4, 92)}</svg>`;
+
+// The Halloween song's extra questions (emoji pictures): what I dressed up as, and the treat we got.
+const COSTUMES = {
+  superhero: 'a superhero', princess: 'a princess', astronaut: 'an astronaut', cowboy: 'a cowboy',
+  dinosaur: 'a dinosaur', robot: 'a robot', wizard: 'a wizard', unicorn: 'a unicorn',
+};
+const TREATS = {
+  candy: 'some candy', lollipop: 'a lollipop', chocolate: 'some chocolate', cookie: 'a cookie',
+  popcorn: 'some popcorn', cupcake: 'a cupcake', donut: 'a donut', apple: 'an apple',
+};
+const TRICK_OR_TREAT = ['Trick or treat, trick or treat,', 'knock knock on the door!', 'Trick or treat, trick or treat,', "let's go get some more!"];
 
 const COLOURS = [
   ['red', '#E74C3C'], ['orange', '#F57C14'], ['yellow', '#F1C40F'], ['green', '#27AE60'],
@@ -38,13 +54,15 @@ const ACTIONS = {
   sleep: { line: (t) => `The ${t} went to sleep,`, shout: 'SHH, SHH, SHH!', move: '',
     icon: `<circle cx="38" cy="58" r="30" fill="#F7F3D0" stroke="#2C3E50" stroke-width="4"/><circle cx="54" cy="48" r="26" fill="#fff"/>` +
       `<text x="70" y="38" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="30" fill="#2C3E50">Z</text><text x="84" y="18" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="22" fill="#2C3E50">z</text>` },
+  wave: { line: (t) => `The ${t} waved hello,`, shout: 'HELLO, HELLO, HELLO!', move: 'wiggle', icon: picImage('wave_hand', 8, 8, 84) },
+  peekaboo: { line: (t) => `The ${t} hid and then said,`, shout: 'PEEK-A-BOO!', move: 'peek', icon: picImage('peekaboo', 8, 8, 84) },
 };
 const ACTIONS_FOR = {
   ocean: ['splash', 'jump', 'dance', 'sleep'],
   animals: ['jump', 'dance', 'sleep', 'splash'],
   vehicles: ['zoom', 'jump', 'dance', 'sleep'],
   food: ['dance', 'jump', 'zoom', 'sleep'],
-  halloween: ['boo', 'fly', 'knock', 'dance'],
+  halloween: ['boo', 'fly', 'knock', 'dance', 'wave', 'peekaboo'],
 };
 
 const FEELINGS = {
@@ -60,11 +78,15 @@ const faceSvg = (f) => `<svg data-sketch viewBox="-4 -4 108 108"><circle cx="50"
 function builtScene(spec) {
   const w = WORLDS[spec.world];
   let mid = '';
+  const dance = spec.move ? ` class="${spec.move}"` : '';
   if (spec.thing) {
-    const dance = spec.move ? ` class="${spec.move}"` : '';
     mid += `<g${dance}><g transform="translate(${w.thingX ?? 130} ${w.ground - 168}) scale(1.4)">${objDraw(spec.thing, spec.tint)}</g></g>`;
+  } else if (spec.pic) {   // an emoji picture standing where the thing would (the Halloween costume)
+    mid += `<g${dance}>${picImage(spec.pic, (w.thingX ?? 130) + 4, w.ground - 160, 132)}</g>`;
   }
-  if (spec.action) mid += `<g transform="translate(286 ${Math.max(30, w.ground - 210)}) scale(.9)"><circle cx="50" cy="50" r="56" fill="#fff" opacity=".85"/>${ACTIONS[spec.action].icon}</g>`;
+  const bubble = (icon) => `<g transform="translate(286 ${Math.max(30, w.ground - 210)}) scale(.9)"><circle cx="50" cy="50" r="56" fill="#fff" opacity=".85"/>${icon}</g>`;
+  if (spec.action) mid += bubble(ACTIONS[spec.action].icon);
+  if (spec.treat) mid += `<g class="bounce">${bubble(picImage(spec.treat, 8, 8, 84))}</g>`;
   if (spec.feeling) mid += `<g class="bounce"><g transform="translate(290 34) scale(.9)"><circle cx="50" cy="50" r="46" fill="#FFD34D" stroke="#2C3E50" stroke-width="4"/>${FEELINGS[spec.feeling]}</g></g>`;
   if (spec.question) mid += `<g class="bounce"><text x="200" y="${w.ground - 50}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="800" font-size="120" fill="#fff" stroke="#2C3E50" stroke-width="5" paint-order="stroke">?</text></g>`;
   return w.back(0) + mid + w.front();
@@ -74,8 +96,25 @@ function writeSong(d) {
   const thing = OBJECTS[d.thing].word, colour = d.colour[0], tint = d.colour[1];
   const an = /^[aeiou]/.test(colour) ? 'an' : 'a';
   const a = ACTIONS[d.action], art = (extra) => ({ world: PLACES[d.topic].world, thing: d.thing, tint, ...extra });
+  const title = `The ${colour[0].toUpperCase() + colour.slice(1)} ${thing.replace(/\b\w/g, (c) => c.toUpperCase())}`;
+  if (d.topic === 'halloween') {
+    const world = 'halloween';
+    return {
+      title, by: 'Us', cover: art({}),
+      pages: [
+        { scene: { world, pic: d.costume, move: 'bounce' }, part: 'verse', lines: ['On Halloween I dressed up,', `I was ${COSTUMES[d.costume]}!`] },
+        { scene: { world, question: true }, part: 'verse', lines: [`We went to ${PLACES.halloween.place},`, 'and guess what we saw?'] },
+        { scene: art({}), part: 'verse', lines: [`We saw ${an} ${colour} ${thing},`, `a great big ${colour} ${thing}!`] },
+        { scene: art({ move: a.move, action: d.action }), part: 'verse', lines: [a.line(thing), a.shout] },
+        { scene: { world, thing: 'bucket', move: 'bounce' }, part: 'chorus', lines: TRICK_OR_TREAT },
+        { scene: art({ treat: d.treat }), part: 'verse', lines: [`The ${thing} gave us ${TREATS[d.treat]},`, 'YUM, YUM, YUM!'] },
+        { scene: art({ feeling: d.feeling }), part: 'verse', lines: [`That made me feel so ${d.feeling},`, PLACES.halloween.end] },
+        { scene: { world, thing: 'bucket', move: 'bounce' }, part: 'chorus', lines: TRICK_OR_TREAT, end: true },
+      ],
+    };
+  }
   return {
-    title: `The ${colour[0].toUpperCase() + colour.slice(1)} ${thing.replace(/\b\w/g, (c) => c.toUpperCase())}`,
+    title,
     by: 'Us',
     cover: art({}),
     pages: [
@@ -104,15 +143,19 @@ function builderScreen(mode, editId) {
     { key: 'topic', ask: 'What should our song be about?',
       options: () => Object.entries(TOPICS).map(([id, t]) => ({ value: id, label: t.name,
         art: `<svg data-sketch viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">${builtScene({ world: PLACES[id].world, thing: objectsIn(id)[0] })}</svg>` })) },
+    { key: 'costume', ask: 'What did you dress up as?', only: 'halloween',
+      options: () => Object.keys(COSTUMES).map((k) => ({ value: k, label: k, art: picSvg(k) })) },
     { key: 'thing', ask: 'What did we see?',
-      options: () => objectsIn(draft.topic).slice(0, 6).map((k) => ({ value: k, label: OBJECTS[k].word, art: objSvg(k) })) },
+      options: () => (PLACES[draft.topic].things || objectsIn(draft.topic).slice(0, 6)).map((k) => ({ value: k, label: OBJECTS[k].word, art: objSvg(k) })) },
     { key: 'colour', ask: 'What colour was it?',
       options: () => COLOURS.map((c) => ({ value: c, label: c[0], art: objSvg(draft.thing, '', c[1]) })) },
     { key: 'action', ask: 'What did it do?',
-      options: () => ACTIONS_FOR[draft.topic].map((k) => ({ value: k, label: k, art: `<svg data-sketch viewBox="-4 -4 108 108">${ACTIONS[k].icon}</svg>` })) },
+      options: () => ACTIONS_FOR[draft.topic].map((k) => ({ value: k, label: k === 'peekaboo' ? 'peek-a-boo' : k, art: `<svg data-sketch viewBox="-4 -4 108 108">${ACTIONS[k].icon}</svg>` })) },
+    { key: 'treat', ask: 'What treat did we get?', only: 'halloween',
+      options: () => Object.keys(TREATS).map((k) => ({ value: k, label: k, art: picSvg(k) })) },
     { key: 'feeling', ask: 'How did it make you feel?',
       options: () => Object.keys(FEELINGS).map((k) => ({ value: k, label: k, art: faceSvg(k) })) },
-  ];
+  ].filter((s) => !s.only || s.only === draft.topic);
   const step = steps[draft.step];
   const opts = step.options();
 

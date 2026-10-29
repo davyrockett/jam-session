@@ -1,7 +1,8 @@
 /* The picture library for Silly Songs: emoji-style pictures stored in the app (pics/<code>.svg), so they work offline.
    Artwork: Twemoji (github.com/jdecked/twemoji), CC-BY 4.0. A copy of Song Party's pics.js and pics/ (the silly
    songs come from Song Party's song list, so their pictures have the same names). If Song Party gets new pictures,
-   copy pics.js and pics/ over again. Also loaded by sw.js, so every picture is saved for offline use. */
+   copy pics.js and pics/ over again, but keep the "Jam Session only" block at the end (Song Builder's Halloween
+   costumes, treats and actions). Also loaded by sw.js, so every picture is saved for offline use. */
 var PICS = {
   // Animals
   frog: '1f438', fish: '1f41f', 'tropical fish': '1f420', duck: '1f986', cat: '1f431', dog: '1f436', crab: '1f980',
@@ -33,6 +34,9 @@ var PICS = {
   thumbs: '1f44d', hug: '1fac2', arm: '1f4aa', eyes: '1f440', ear: '1f442', nose: '1f443', mouth: '1f444', dance: '1f483',
   // Feelings
   happy: '1f60a', smile: '1f603', sad: '1f622', angry: '1f620', sleepy: '1f634', surprised: '1f62e', silly: '1f61c', freezing: '1f976',
+  // Jam Session only (Song Builder's Halloween song): keep these when copying from Song Party
+  superhero: '1f9b8', princess: '1f478', astronaut: '1f9d1-200d-1f680', wizard: '1f9d9', cowboy: '1f920',
+  lollipop: '1f36d', peekaboo: '1f648',
 };
 function picUrl(name) {
   var code = PICS[String(name || '').toLowerCase()];
