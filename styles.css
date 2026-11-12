@@ -323,6 +323,8 @@ dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
 .silly-art { width: 100%; height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-content: center; gap: 4%; padding: 6%; }
 .silly-art span { flex: 0 0 auto; width: 70%; display: flex; animation: sillyBob 2.6s ease-in-out infinite; }
 .silly-art.n2 span { width: 44%; } .silly-art.n3 span, .silly-art.n4 span { width: 40%; }
+/* More silly words on a page: 3 across for 5–6, 4 across for 7–8. */
+.silly-art.n5 span, .silly-art.n6 span { width: 26%; } .silly-art.n7 span, .silly-art.n8 span { width: 18%; }
 .silly-art img { width: 100%; height: auto; }
 @keyframes sillyBob { 50% { transform: translateY(-5%) rotate(-3deg); } }
 .silly-words { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px; }

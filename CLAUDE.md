@@ -135,7 +135,9 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   = the silly things sung on that page, big; words column wider in landscape) → `#/silly/<id>/done` (Sing it again /
   Pick new words, `/new`). Picks live in memory only. Each silly song is also a Choice Board card. Pictures are
   Song Party's Twemoji library copied in (`pics.js` + `pics/`, all precached by sw.js; credit in Settings and README);
-  copy them over again when Song Party gets new pictures. No music button here (the groove's chords don't fit these songs).
+  copy them over again when Song Party gets new pictures.
+  2026-11-12: songs got more silly words (up to 8 on a page; `.silly-art` goes 3 across for 5–6, 4 across for 7–8)
+  and the pick question rotates through each kind's `asks` (`sillyAsk`, same as Song Party's), "Last one!" on the last. No music button here (the groove's chords don't fit these songs).
 - **Hello song lyrics are a placeholder** until David sends them (`ROUTINES` in songs.js).
 - **Test locally:** `Start Jam Session.command`, or `python3 -m http.server 8773` here and open
   http://localhost:8773/. Offline caching is switched off on localhost so tests always load fresh files.

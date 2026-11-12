@@ -9,21 +9,21 @@
 
 const SILLY_KINDS = {
   // One thing (it fits after "a").
-  thing: { ask: 'Pick a thing!', items: [
+  thing: { asks: ['Pick a thing!', 'What’s the silliest thing here?', 'What should we sing about?', 'Pick your favorite!', 'What would make us laugh?', 'Point to something funny!'], items: [
     ['pizza', 'pizza'], ['banana', 'banana'], ['cake', 'cake'], ['donut', 'donut'], ['cookie', 'cookie'], ['hamburger', 'hamburger'],
     ['carrot', 'carrot'], ['pickle', 'pickle'], ['duck', 'duck'], ['frog', 'frog'], ['cat', 'cat'], ['dog', 'dog'],
     ['pig', 'pig'], ['cow', 'cow'], ['monkey', 'monkey'], ['chicken', 'chicken'], ['dinosaur', 'dinosaur'], ['unicorn', 'unicorn'],
     ['shoe', 'shoe'], ['hat', 'hat'], ['teddy bear', 'teddy'], ['balloon', 'balloon'], ['robot', 'robot'], ['guitar', 'guitar'],
   ] },
   // Lots of something (it fits after "of" or "lots of").
-  things: { ask: 'Pick lots of something!', items: [
+  things: { asks: ['Pick lots of something!', 'What do we want a whole bunch of?', 'Pick a big pile of something!', 'What should we have tons of?', 'What would be silly to have lots of?'], items: [
     ['spaghetti', 'spaghetti'], ['popcorn', 'popcorn'], ['cheese', 'cheese'], ['pickles', 'pickle'], ['french fries', 'fries'], ['pancakes', 'pancakes'],
     ['cupcakes', 'cupcake'], ['grapes', 'grapes'], ['bananas', 'banana'], ['cookies', 'cookie'], ['donuts', 'donut'], ['ice cream', 'ice cream'],
     ['pudding', 'pudding'], ['chocolate', 'chocolate'], ['candy', 'candy'], ['bubbles', 'bubbles'], ['socks', 'socks'], ['frogs', 'frog'],
     ['ducks', 'duck'], ['bugs', 'bug'], ['worms', 'worm'], ['kittens', 'cat'], ['puppies', 'dog'], ['flowers', 'flower'],
   ] },
   // A describing word (none start with a vowel, so "a" never needs to change).
-  describe: { ask: 'Pick a describing word!', items: [
+  describe: { asks: ['Pick a describing word!', 'What’s it like? Pick a describing word!', 'Pick a funny describing word!', 'Stinky? Sparkly? Pick a describing word!', 'Pick a silly way to be!'], items: [
     ['stinky', 'skunk'], ['sparkly', 'sparkles'], ['sticky', 'honey'], ['slimy', 'snail'], ['spooky', 'ghost'], ['sleepy', 'sleepy'],
     ['silly', 'silly'], ['happy', 'happy'], ['grumpy', 'angry'], ['freezing', 'freezing'], ['spicy', 'pepper'], ['wiggly', 'worm'],
     ['bouncy', 'basketball'], ['fluffy', 'sheep'], ['giant', 'elephant'], ['tiny', 'ant'], ['crunchy', 'carrot'], ['shiny', 'star'],
@@ -50,6 +50,14 @@ function loadSilly() {
       return true;
     })
     .catch(() => false);
+}
+
+// The question for word i: the next of its kind's asks (taken in turn, so a song with lots of words doesn't say
+// the same thing every time), and "Last one!" on the last word. Same as Song Party's sillyAsk.
+function sillyAsk(kinds, i) {
+  const asks = (SILLY_KINDS[kinds[i]] || SILLY_KINDS.thing).asks;
+  const k = kinds.slice(0, i).filter((x) => x === kinds[i]).length;
+  return (kinds.length > 2 && i === kinds.length - 1 ? 'Last one! ' : '') + asks[k % asks.length];
 }
 
 // "fire|things" → { word: 'fire', key: 'fire', kind: 'things' }
@@ -109,7 +117,7 @@ function sillyPick() {
   const s = silly, i = s.picks.length, kind = SILLY_KINDS[s.kinds[i]];
   show(`<div class="screen silly-pick">
     <div class="topbar">${homeBtn('#/silly')}<div class="title"><h2>${esc(s.song.title)}</h2><p>Word ${i + 1} of ${s.blanks.length}</p></div>${settingsBtn}</div>
-    <h1 class="ask-big">${kind.ask}</h1>
+    <h1 class="ask-big">${esc(sillyAsk(s.kinds, i))}</h1>
     <div class="silly-grid" id="sgrid">${kind.items.map(([word, pic]) => `
       <button type="button" class="sp-tile" data-word="${esc(word)}" ${s.picks.includes(word) ? 'disabled' : ''}>${picImg(pic)}<span>${esc(word)}</span></button>`).join('')}
     </div>
@@ -206,7 +214,7 @@ function sillyArt(lines) {
   const pics = [];
   lines.forEach((l) => { for (const m of l.matchAll(/\{([^{}]+)\}/g)) { const s = swapFor(m[1]); if (s && !pics.includes(s.pic)) pics.push(s.pic); } });
   const list = pics.length ? pics : [silly.song.pic];
-  return `<div class="silly-art n${Math.min(list.length, 4)}">${list.map((p, k) => `<span style="animation-delay:${-k * .7}s">${picImg(p)}</span>`).join('')}</div>`;
+  return `<div class="silly-art n${Math.min(list.length, 8)}">${list.map((p, k) => `<span style="animation-delay:${-k * .7}s">${picImg(p)}</span>`).join('')}</div>`;
 }
 
 function sillySing(pageNum) {
