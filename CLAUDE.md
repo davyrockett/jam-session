@@ -142,3 +142,4 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
 - **Test locally:** `Start Jam Session.command`, or `python3 -m http.server 8773` here and open
   http://localhost:8773/. Offline caching is switched off on localhost so tests always load fresh files.
 - **Publish:** run `tools/bump.sh`, commit, push, confirm live.
+- Silly Songs: `{bow=knot}` sings "bow" but shares knot's pick (2026-11-13, same as Song Party's madlib.js; David wanted fewer picks).

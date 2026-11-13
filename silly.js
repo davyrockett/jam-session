@@ -2,6 +2,7 @@
 // The songs come from Song Party's song list (the public song-party-data repo): any song whose lyrics mark
 // words with curly brackets, like {burning|describe} or ring of {fire|things}. After the | is the kind of word
 // that fits there (SILLY_KINDS; plain {thing} means one thing). Every {fire} in the song gets the same pick.
+// {bow=knot} sings "bow" but takes knot's pick, so two different words share one pick.
 // Like real Mad Libs, the pick screen never shows the lyrics: just "Pick a describing word!" and a board of
 // only the words that fit. Then the song opens as a book, with the picks highlighted beside their pictures.
 // The kinds and boards are the same as Song Party's madlib.js; change both together.
@@ -61,9 +62,11 @@ function sillyAsk(kinds, i) {
 }
 
 // "fire|things" → { word: 'fire', key: 'fire', kind: 'things' }
+// "bow=knot" → { word: 'bow', key: 'knot', … }: sing "bow" but share knot's pick (same as Song Party's madlib.js).
 function parseSwap(raw) {
-  const [word, kind = ''] = String(raw).split('|').map((x) => x.trim());
-  return { word, key: word.toLowerCase(), kind: SILLY_KINDS[kind.toLowerCase()] ? kind.toLowerCase() : 'thing' };
+  const [main, kind = ''] = String(raw).split('|').map((x) => x.trim());
+  const [word, link = word] = main.split('=').map((x) => x.trim());
+  return { word, key: link.toLowerCase(), kind: SILLY_KINDS[kind.toLowerCase()] ? kind.toLowerCase() : 'thing' };
 }
 function sillyItem(word) {
   for (const k of Object.values(SILLY_KINDS)) { const it = k.items.find((x) => x[0] === word); if (it) return { word, pic: it[1] }; }
