@@ -310,6 +310,7 @@ dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
 .silly-grid.decided .sp-tile:not(.chosen) { opacity: .2; transform: scale(.94); }
 @media (max-aspect-ratio: 1/1) { .silly-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .silly-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow-y: auto; grid-auto-rows: 110px; } }
+.silly-edit { display: inline-block; margin-top: 18px; color: var(--muted); font-size: 1rem; text-decoration: none; opacity: .8; }
 .silly-empty { color: var(--muted); font-size: 1.2rem; max-width: 640px; }
 .swap { font: inherit; text-transform: inherit; letter-spacing: inherit; color: var(--accent-ink); background: var(--accent-soft); border: 0;
   border-bottom: 4px solid var(--accent); border-radius: 10px; padding: 0 .15em; white-space: nowrap; cursor: pointer; }

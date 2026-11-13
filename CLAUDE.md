@@ -143,3 +143,4 @@ Live: https://www.davyrockett.com/jam-session/ See README.md for features.
   http://localhost:8773/. Offline caching is switched off on localhost so tests always load fresh files.
 - **Publish:** run `tools/bump.sh`, commit, push, confirm live.
 - Silly Songs: `{bow=knot}` sings "bow" but shares knot's pick (2026-11-13, same as Song Party's madlib.js; David wanted fewer picks).
+- Silly Songs list ends with a small "✎ Choose silly words" link to Song Party's Silly Word Picker (`SILLY_PICKER`), which saves to the shared song list (2026-11-13).

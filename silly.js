@@ -38,6 +38,9 @@ const SILLY_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
   ? 'https://www.davyrockett.com/song-party-data/data.json' : '/song-party-data/data.json';
 let sillySongs = store.get('silly', []);   // the last copy, so they still open with no signal
 
+// Song Party's Silly Word Picker, where David chooses which words get swapped (saves to the same song list).
+const SILLY_PICKER = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+  ? 'https://www.davyrockett.com/song-party/tools/silly-picker.html' : '/song-party/tools/silly-picker.html';
 function loadSilly() {
   return fetch(`${SILLY_URL}?t=${Date.now()}`, { cache: 'no-store' })
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))))
@@ -111,6 +114,7 @@ function sillyListScreen() {
         <div class="label"><h3>${esc(s.title)}</h3><p>${songSwaps(s).blanks.length} silly words</p></div>
       </a>`).join('')}</div>`
       : `<p class="silly-empty">${loading ? 'Getting the songs…' : 'No silly songs yet. In Song Party’s song editor, put curly brackets around the words to swap, like ring of {fire|things}.'}</p>`}
+    <p><a class="silly-edit" href="${SILLY_PICKER}">✎ Choose silly words</a></p>
   </div>`);
   draw(true);
   loadSilly().then(() => { if (location.hash.replace(/\/$/, '') === '#/silly') draw(false); });
